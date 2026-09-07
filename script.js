@@ -443,6 +443,9 @@ let score = 0;
 let userName = "";
 let answered = false;
 
+let timeLeft = 15;
+let timer = null;
+
 
 // ========================================
 // GET HTML ELEMENTS
@@ -474,6 +477,27 @@ const nameError = document.getElementById("nameError");
 const saveStatus = document.getElementById("saveStatus");
 const resultsList = document.getElementById("resultsList");
 
+const timeEl = document.getElementById("time");
+const leaderboardEl = document.getElementById("leaderboard");
+
+
+// ========================================
+// SHUFFLE QUESTIONS
+// ========================================
+
+function shuffleQuestions(array) {
+
+  for (let i = array.length - 1; i > 0; i--) {
+
+    const j = Math.floor(Math.random() * (i + 1));
+
+    [array[i], array[j]] =
+      [array[j], array[i]];
+
+  }
+
+}
+
 
 // ========================================
 // START QUIZ
@@ -485,7 +509,9 @@ startBtn.addEventListener("click", () => {
 
   if (userName === "") {
 
-    nameError.innerText = "⚠️ Please enter your name!";
+    nameError.innerText =
+      "⚠️ Please enter your name!";
+
     return;
 
   }
@@ -494,8 +520,12 @@ startBtn.addEventListener("click", () => {
 
   displayName.innerText = userName;
 
+  // Random question order
+  shuffleQuestions(questions);
+
   currentQuestion = 0;
   score = 0;
+  answered = false;
 
   startScreen.style.display = "none";
   quizScreen.style.display = "block";
@@ -507,6 +537,68 @@ startBtn.addEventListener("click", () => {
 
 
 // ========================================
+// TIMER
+// ========================================
+
+function startTimer() {
+
+  clearInterval(timer);
+
+  timeLeft = 15;
+
+  timeEl.innerText = timeLeft;
+
+  timer = setInterval(() => {
+
+    timeLeft--;
+
+    timeEl.innerText = timeLeft;
+
+    if (timeLeft <= 0) {
+
+      clearInterval(timer);
+
+      answered = true;
+
+      showCorrectAnswer();
+
+      nextBtn.style.display = "block";
+
+    }
+
+  }, 1000);
+
+}
+
+
+// ========================================
+// SHOW CORRECT ANSWER
+// ========================================
+
+function showCorrectAnswer() {
+
+  const correctIndex =
+    questions[currentQuestion].correct;
+
+  const buttons =
+    answersEl.querySelectorAll("button");
+
+  buttons.forEach((button, index) => {
+
+    button.disabled = true;
+
+    if (index === correctIndex) {
+
+      button.classList.add("correct");
+
+    }
+
+  });
+
+}
+
+
+// ========================================
 // LOAD QUESTION
 // ========================================
 
@@ -515,6 +607,8 @@ function loadQuestion() {
   answered = false;
 
   nextBtn.style.display = "none";
+
+  startTimer();
 
   const q = questions[currentQuestion];
 
@@ -531,12 +625,14 @@ function loadQuestion() {
   const progress =
     ((currentQuestion + 1) / questions.length) * 100;
 
-  progressBar.style.width = progress + "%";
+  progressBar.style.width =
+    progress + "%";
 
 
   q.answers.forEach((answer, index) => {
 
-    const button = document.createElement("button");
+    const button =
+      document.createElement("button");
 
     button.innerText = answer;
 
@@ -564,6 +660,8 @@ function checkAnswer(selectedIndex, selectedButton) {
   if (answered) return;
 
   answered = true;
+
+  clearInterval(timer);
 
   const correctIndex =
     questions[currentQuestion].correct;
@@ -631,6 +729,8 @@ nextBtn.addEventListener("click", () => {
 
 async function showResult() {
 
+  clearInterval(timer);
+
   quizScreen.style.display = "none";
   resultBox.style.display = "block";
 
@@ -664,7 +764,7 @@ async function showResult() {
   }
 
 
-  // SAVE RESULT TO FIREBASE
+  // SAVE RESULT
 
   saveStatus.innerText =
     "Saving your result... ⏳";
@@ -691,7 +791,9 @@ async function showResult() {
       "✅ Your result has been saved!";
 
 
-    loadRecentResults();
+    await loadRecentResults();
+
+    await loadLeaderboard();
 
   }
 
@@ -701,6 +803,10 @@ async function showResult() {
 
     saveStatus.innerText =
       "❌ Result could not be saved.";
+
+    // Try loading existing data
+    loadRecentResults();
+    loadLeaderboard();
 
   }
 
@@ -769,10 +875,126 @@ async function loadRecentResults() {
 
   catch (error) {
 
-    console.error("Error loading results:", error);
+    console.error(
+      "Error loading results:",
+      error
+    );
 
     resultsList.innerHTML =
       "Could not load results.";
+
+  }
+
+}
+
+
+// ========================================
+// GLOBAL LEADERBOARD
+// ========================================
+
+async function loadLeaderboard() {
+
+  leaderboardEl.innerHTML =
+    "Loading leaderboard...";
+
+
+  try {
+
+    const leaderboardQuery = query(
+
+      collection(db, "quizResults"),
+
+      orderBy("score", "desc"),
+
+      limit(10)
+
+    );
+
+
+    const snapshot =
+      await getDocs(leaderboardQuery);
+
+
+    leaderboardEl.innerHTML = "";
+
+
+    if (snapshot.empty) {
+
+      leaderboardEl.innerHTML =
+        "No players yet.";
+
+      return;
+
+    }
+
+
+    let rank = 1;
+
+
+    snapshot.forEach((doc) => {
+
+      const data = doc.data();
+
+      const item =
+        document.createElement("div");
+
+      item.classList.add(
+        "leaderboard-item"
+      );
+
+
+      let medal = "";
+
+      if (rank === 1) {
+
+        medal = "🥇";
+
+      } else if (rank === 2) {
+
+        medal = "🥈";
+
+      } else if (rank === 3) {
+
+        medal = "🥉";
+
+      } else {
+
+        medal = `#${rank}`;
+
+      }
+
+
+      item.innerHTML = `
+
+        <span>
+          ${medal}
+          <strong>${data.name}</strong>
+        </span>
+
+        <span>
+          ${data.score}/${data.totalQuestions}
+        </span>
+
+      `;
+
+
+      leaderboardEl.appendChild(item);
+
+      rank++;
+
+    });
+
+  }
+
+  catch (error) {
+
+    console.error(
+      "Leaderboard Error:",
+      error
+    );
+
+    leaderboardEl.innerHTML =
+      "Could not load leaderboard.";
 
   }
 
@@ -785,8 +1007,11 @@ async function loadRecentResults() {
 
 restartBtn.addEventListener("click", () => {
 
+  clearInterval(timer);
+
   currentQuestion = 0;
   score = 0;
+  answered = false;
 
   userNameInput.value = "";
 
