@@ -1,26 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Simple Quiz App</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Master</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="quiz-box">
+  <div class="quiz-box">
+    <div class="header">
+      <h1>Quiz Master</h1>
+      <p>Test your web development knowledge!</p>
+    </div>
 
-  <h1>Quiz App</h1>
+    <div class="progress-container">
+      <div id="progressBar"></div>
+    </div>
 
-  <h2 id="question">Question</h2>
+    <div class="quiz-info">
+      <span id="questionNumber"></span>
+      <span id="scoreLive">Score: 0</span>
+    </div>
 
-  <div id="answers"></div>
+    <h2 id="question">Question</h2>
 
-  <button id="nextBtn">Next</button>
+    <div id="answers"></div>
 
-  <h2 id="score"></h2>
+    <div class="buttons">
+      <button id="nextBtn">Next Question →</button>
+      <button id="restartBtn">🔄 Restart Quiz</button>
+    </div>
 
-</div>
+    <div id="resultBox" class="result-box">
+      <h2 id="score"></h2>
+      <p id="message"></p>
+    </div>
+  </div>
 
-<script src="script.js"></script>
-
+  <script src="script.js"></script>
 </body>
 </html>
