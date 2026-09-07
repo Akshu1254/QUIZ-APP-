@@ -6,38 +6,86 @@
   <title>Quiz Master</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
   <div class="quiz-box">
+
     <div class="header">
       <h1>Quiz Master</h1>
       <p>Test your web development knowledge!</p>
     </div>
 
-    <div class="progress-container">
-      <div id="progressBar"></div>
+    <!-- NAME SCREEN -->
+    <div id="startScreen">
+      <h2>Welcome!</h2>
+      <p>Enter your name before starting the quiz.</p>
+
+      <input
+        type="text"
+        id="userName"
+        placeholder="Enter your name"
+      >
+
+      <p id="nameError"></p>
+
+      <button id="startBtn">Start Quiz →</button>
     </div>
 
-    <div class="quiz-info">
-      <span id="questionNumber"></span>
-      <span id="scoreLive">Score: 0</span>
+
+    <!-- QUIZ SCREEN -->
+    <div id="quizScreen" style="display: none;">
+
+      <p class="welcome">
+        Welcome, <span id="displayName"></span>! 👋
+      </p>
+
+      <div class="progress-container">
+        <div id="progressBar"></div>
+      </div>
+
+      <div class="quiz-info">
+        <span id="questionNumber"></span>
+        <span id="scoreLive">Score: 0</span>
+      </div>
+
+      <h2 id="question"></h2>
+
+      <div id="answers"></div>
+
+      <button id="nextBtn" style="display: none;">
+        Next Question →
+      </button>
+
     </div>
 
-    <h2 id="question">Question</h2>
 
-    <div id="answers"></div>
+    <!-- RESULT SCREEN -->
+    <div id="resultBox" style="display: none;">
 
-    <div class="buttons">
-      <button id="nextBtn">Next Question →</button>
-      <button id="restartBtn">🔄 Restart Quiz</button>
-    </div>
+      <h2 id="finalTitle"></h2>
 
-    <div id="resultBox" class="result-box">
       <h2 id="score"></h2>
+
       <p id="message"></p>
+
+      <p class="saved">
+        Result saved on this device.
+      </p>
+
+      <button id="restartBtn">
+        🔄 Play Again
+      </button>
+
+      <h3>Recent Results</h3>
+
+      <div id="resultsList"></div>
+
     </div>
+
   </div>
 
   <script src="script.js"></script>
+
 </body>
 </html>
