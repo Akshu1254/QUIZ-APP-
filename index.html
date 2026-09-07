@@ -1,91 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
   <title>Quiz Master</title>
+
   <link rel="stylesheet" href="style.css">
+
 </head>
+
 
 <body>
 
   <div class="quiz-box">
 
+    <!-- HEADER -->
+
     <div class="header">
-      <h1>Quiz Master</h1>
-      <p>Test your web development knowledge!</p>
+
+      <h1>Quiz Master 🧠</h1>
+
+      <p>Test your knowledge and challenge yourself!</p>
+
     </div>
 
-    <!-- NAME SCREEN -->
+
+    <!-- =========================
+         START SCREEN
+    ========================== -->
+
     <div id="startScreen">
-      <h2>Welcome!</h2>
-      <p>Enter your name before starting the quiz.</p>
+
+      <h2>Welcome! 👋</h2>
+
+      <p>Please enter your name to start the quiz.</p>
+
 
       <input
         type="text"
         id="userName"
         placeholder="Enter your name"
+        autocomplete="name"
       >
+
 
       <p id="nameError"></p>
 
-      <button id="startBtn">Start Quiz →</button>
+
+      <button id="startBtn">
+
+        Start Quiz 🚀
+
+      </button>
+
     </div>
 
 
-    <!-- QUIZ SCREEN -->
-    <div id="quizScreen" style="display: none;">
+
+    <!-- =========================
+         QUIZ SCREEN
+    ========================== -->
+
+    <div id="quizScreen"
+         style="display: none;">
 
       <p class="welcome">
-        Welcome, <span id="displayName"></span>! 👋
+
+        Welcome,
+        <span id="displayName"></span>! 👋
+
       </p>
+
+
+      <!-- PROGRESS BAR -->
 
       <div class="progress-container">
+
         <div id="progressBar"></div>
+
       </div>
+
+
+
+      <!-- QUESTION INFORMATION -->
 
       <div class="quiz-info">
-        <span id="questionNumber"></span>
-        <span id="scoreLive">Score: 0</span>
+
+        <span id="questionNumber">
+
+          Question 1 of 10
+
+        </span>
+
+
+        <span id="scoreLive">
+
+          Score: 0
+
+        </span>
+
       </div>
 
-      <h2 id="question"></h2>
 
-      <div id="answers"></div>
 
-      <button id="nextBtn" style="display: none;">
+      <!-- QUESTION -->
+
+      <h2 id="question">
+
+        Loading question...
+
+      </h2>
+
+
+
+      <!-- ANSWERS -->
+
+      <div id="answers">
+
+      </div>
+
+
+
+      <!-- NEXT BUTTON -->
+
+      <button
+        id="nextBtn"
+        style="display: none;">
+
         Next Question →
+
       </button>
 
     </div>
 
 
-    <!-- RESULT SCREEN -->
-    <div id="resultBox" style="display: none;">
 
-      <h2 id="finalTitle"></h2>
+    <!-- =========================
+         RESULT SCREEN
+    ========================== -->
 
-      <h2 id="score"></h2>
+    <div id="resultBox"
+         style="display: none;">
 
-      <p id="message"></p>
 
-      <p class="saved">
-        Result saved on this device.
+      <h2 id="finalTitle">
+
+        Quiz Finished! 🎉
+
+      </h2>
+
+
+
+      <!-- FINAL SCORE -->
+
+      <h2 id="score">
+
+      </h2>
+
+
+
+      <!-- MESSAGE -->
+
+      <p id="message">
+
       </p>
 
+
+
+      <!-- FIREBASE STATUS -->
+
+      <p id="saveStatus">
+
+      </p>
+
+
+
+      <!-- PLAY AGAIN BUTTON -->
+
       <button id="restartBtn">
+
         🔄 Play Again
+
       </button>
 
-      <h3>Recent Results</h3>
 
-      <div id="resultsList"></div>
+
+      <!-- RECENT RESULTS -->
+
+      <h3>Recent Results 🏆</h3>
+
+
+      <div id="resultsList">
+
+      </div>
+
 
     </div>
+
 
   </div>
 
-  <script src="script.js"></script>
+
+
+  <!-- =========================
+       JAVASCRIPT
+  ========================== -->
+
+  <!-- IMPORTANT:
+       type="module" is required
+       for Firebase -->
+  <script
+    type="module"
+    src="script.js">
+  </script>
+
 
 </body>
+
 </html>
