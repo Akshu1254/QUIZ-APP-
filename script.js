@@ -1,111 +1,97 @@
+// ================================
+// FIREBASE IMPORTS
+// ================================
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  orderBy,
+  limit,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+
+// ================================
+// FIREBASE CONFIGURATION
+// ================================
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDNMtxRnq2Hll8ggtVqri2M8WGezifZ4Kk",
+  authDomain: "quiz-master-5c85b.firebaseapp.com",
+  projectId: "quiz-master-5c85b",
+  storageBucket: "quiz-master-5c85b.firebasestorage.app",
+  messagingSenderId: "91642115736",
+  appId: "1:91642115736:web:0cac62878f9da6f45cc2ed",
+  measurementId: "G-ZKRT9Y9R0X"
+};
+
+
+// ================================
+// INITIALIZE FIREBASE
+// ================================
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+
+// ================================
+// QUIZ QUESTIONS
+// ================================
+
 const questions = [
 
   {
-    question: "What does HTML stand for?",
+    question: "What is HTML?",
     answers: [
-      "Hyper Text Markup Language",
-      "High Text Machine Language",
-      "Hyper Tool Multi Language",
-      "Home Text Markup Language"
-    ],
-    correct: 0
-  },
-
-  {
-    question: "What is CSS mainly used for?",
-    answers: [
-      "Styling web pages",
-      "Creating databases",
-      "Running servers",
-      "Writing HTML"
-    ],
-    correct: 0
-  },
-
-  {
-    question: "Which language makes websites interactive?",
-    answers: [
-      "HTML",
-      "CSS",
-      "JavaScript",
-      "SQL"
-    ],
-    correct: 2
-  },
-
-  {
-    question: "Which HTML tag creates a hyperlink?",
-    answers: [
-      "<link>",
-      "<a>",
-      "<href>",
-      "<url>"
+      "Programming Language",
+      "Markup Language",
+      "Database"
     ],
     correct: 1
   },
 
   {
-    question: "Which CSS symbol is used for an ID?",
+    question: "What is CSS used for?",
     answers: [
-      ".",
-      "#",
-      "*",
-      "&"
+      "Styling websites",
+      "Database management",
+      "Creating hardware"
     ],
-    correct: 1
+    correct: 0
   },
 
   {
-    question: "Which HTML tag creates the largest heading?",
+    question: "What is JavaScript?",
+    answers: [
+      "A programming language",
+      "A database",
+      "An operating system"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which HTML tag is used for the largest heading?",
     answers: [
       "<h6>",
       "<heading>",
-      "<h1>",
-      "<head>"
+      "<h1>"
     ],
     correct: 2
   },
 
   {
-    question: "Which JavaScript keyword declares a variable?",
+    question: "Which symbol is used for an ID selector in CSS?",
     answers: [
-      "let",
-      "style",
-      "html",
-      "select"
-    ],
-    correct: 0
-  },
-
-  {
-    question: "Which method prints in the browser console?",
-    answers: [
-      "print()",
-      "console.log()",
-      "show()",
-      "output()"
-    ],
-    correct: 1
-  },
-
-  {
-    question: "Which is a JavaScript library?",
-    answers: [
-      "React",
-      "HTML",
-      "CSS",
-      "MySQL"
-    ],
-    correct: 0
-  },
-
-  {
-    question: "Which HTML tag displays an image?",
-    answers: [
-      "<image>",
-      "<img>",
-      "<picturefile>",
-      "<src>"
+      ".",
+      "#",
+      "*"
     ],
     correct: 1
   }
@@ -113,13 +99,19 @@ const questions = [
 ];
 
 
+// ================================
+// VARIABLES
+// ================================
+
 let currentQuestion = 0;
 let score = 0;
+let userName = "";
 let answered = false;
-let playerName = "";
 
 
-/* GET HTML ELEMENTS */
+// ================================
+// HTML ELEMENTS
+// ================================
 
 const startScreen = document.getElementById("startScreen");
 const quizScreen = document.getElementById("quizScreen");
@@ -128,114 +120,111 @@ const resultBox = document.getElementById("resultBox");
 const userNameInput = document.getElementById("userName");
 const displayName = document.getElementById("displayName");
 
-const nameError = document.getElementById("nameError");
-
 const startBtn = document.getElementById("startBtn");
-
-const questionEl = document.getElementById("question");
-
-const answersEl = document.getElementById("answers");
-
 const nextBtn = document.getElementById("nextBtn");
-
 const restartBtn = document.getElementById("restartBtn");
 
-const scoreEl = document.getElementById("score");
+const questionEl = document.getElementById("question");
+const answersEl = document.getElementById("answers");
 
-const finalTitle = document.getElementById("finalTitle");
+const scoreEl = document.getElementById("score");
+const scoreLive = document.getElementById("scoreLive");
+
+const questionNumber = document.getElementById("questionNumber");
+
+const progressBar = document.getElementById("progressBar");
 
 const messageEl = document.getElementById("message");
+const nameError = document.getElementById("nameError");
 
-const questionNumberEl =
-  document.getElementById("questionNumber");
+const saveStatus = document.getElementById("saveStatus");
 
-const scoreLiveEl =
-  document.getElementById("scoreLive");
-
-const progressBar =
-  document.getElementById("progressBar");
-
-const resultsList =
-  document.getElementById("resultsList");
+const resultsList = document.getElementById("resultsList");
 
 
-/* START QUIZ */
+// ================================
+// START QUIZ
+// ================================
 
-startBtn.onclick = function () {
+startBtn.addEventListener("click", () => {
 
-  playerName = userNameInput.value.trim();
+  userName = userNameInput.value.trim();
 
-  if (playerName.length < 2) {
+  if (userName === "") {
 
-    nameError.innerText =
-      "Please enter your name.";
+    nameError.innerText = "⚠️ Please enter your name!";
 
     return;
   }
 
   nameError.innerText = "";
 
-  displayName.innerText = playerName;
+  displayName.innerText = userName;
 
   startScreen.style.display = "none";
 
   quizScreen.style.display = "block";
 
   currentQuestion = 0;
-
   score = 0;
 
   loadQuestion();
-};
+
+});
 
 
-/* LOAD QUESTION */
+// ================================
+// LOAD QUESTION
+// ================================
 
 function loadQuestion() {
 
   answered = false;
 
-  let q = questions[currentQuestion];
+  nextBtn.style.display = "none";
+
+  const q = questions[currentQuestion];
 
   questionEl.innerText = q.question;
 
   answersEl.innerHTML = "";
 
 
-  questionNumberEl.innerText =
-    "Question " +
-    (currentQuestion + 1) +
-    " of " +
-    questions.length;
+  // Question Number
+
+  questionNumber.innerText =
+    `Question ${currentQuestion + 1} of ${questions.length}`;
 
 
-  scoreLiveEl.innerText =
-    "Score: " + score;
+  // Live Score
+
+  scoreLive.innerText =
+    `Score: ${score}`;
 
 
-  progressBar.style.width =
-    (currentQuestion / questions.length) * 100 + "%";
+  // Progress Bar
+
+  const progress =
+    ((currentQuestion + 1) / questions.length) * 100;
+
+  progressBar.style.width = progress + "%";
 
 
-  nextBtn.style.display = "none";
+  // Create Answer Buttons
 
+  q.answers.forEach((answer, index) => {
 
-  q.answers.forEach(function (answer, index) {
-
-    let button =
-      document.createElement("button");
+    const button = document.createElement("button");
 
     button.innerText = answer;
 
     button.classList.add("answer-btn");
 
-
-    button.onclick = function () {
+    button.addEventListener("click", () => {
 
       checkAnswer(index, button);
 
-    };
-
+    });
 
     answersEl.appendChild(button);
 
@@ -244,30 +233,28 @@ function loadQuestion() {
 }
 
 
-/* CHECK ANSWER */
+// ================================
+// CHECK ANSWER
+// ================================
 
-function checkAnswer(index, selectedButton) {
+function checkAnswer(selectedIndex, selectedButton) {
 
   if (answered) return;
 
-
   answered = true;
 
-
-  let correctAnswer =
+  const correctIndex =
     questions[currentQuestion].correct;
 
+  const buttons =
+    answersEl.querySelectorAll("button");
 
-  let allButtons =
-    document.querySelectorAll(".answer-btn");
 
-
-  allButtons.forEach(function (button, buttonIndex) {
+  buttons.forEach((button, index) => {
 
     button.disabled = true;
 
-
-    if (buttonIndex === correctAnswer) {
+    if (index === correctIndex) {
 
       button.classList.add("correct");
 
@@ -276,30 +263,16 @@ function checkAnswer(index, selectedButton) {
   });
 
 
-  if (index === correctAnswer) {
+  if (selectedIndex === correctIndex) {
 
     score++;
+
+    scoreLive.innerText =
+      `Score: ${score}`;
 
   } else {
 
     selectedButton.classList.add("wrong");
-
-  }
-
-
-  scoreLiveEl.innerText =
-    "Score: " + score;
-
-
-  if (currentQuestion === questions.length - 1) {
-
-    nextBtn.innerText =
-      "See Result 🏆";
-
-  } else {
-
-    nextBtn.innerText =
-      "Next Question →";
 
   }
 
@@ -309,9 +282,11 @@ function checkAnswer(index, selectedButton) {
 }
 
 
-/* NEXT QUESTION */
+// ================================
+// NEXT QUESTION
+// ================================
 
-nextBtn.onclick = function () {
+nextBtn.addEventListener("click", () => {
 
   currentQuestion++;
 
@@ -322,173 +297,188 @@ nextBtn.onclick = function () {
 
   } else {
 
-    showScore();
+    showResult();
 
   }
 
-};
+});
 
 
-/* SHOW FINAL RESULT */
+// ================================
+// SHOW RESULT
+// ================================
 
-function showScore() {
+async function showResult() {
 
   quizScreen.style.display = "none";
 
   resultBox.style.display = "block";
 
 
-  finalTitle.innerText =
-    "Great job, " +
-    playerName +
-    "! 🎉";
-
-
   scoreEl.innerText =
-    "Your Score: " +
-    score +
-    " / " +
-    questions.length;
+    `Your Score: ${score} / ${questions.length}`;
 
 
-  let percentage =
+  const percentage =
     (score / questions.length) * 100;
 
 
   if (percentage === 100) {
 
     messageEl.innerText =
-      "Perfect score! Outstanding performance!";
+      "🏆 Perfect! Amazing performance!";
 
-  }
-
-  else if (percentage >= 70) {
+  } else if (percentage >= 60) {
 
     messageEl.innerText =
-      "Great job! You have strong knowledge!";
+      "👏 Great job! Keep learning!";
 
-  }
-
-  else if (percentage >= 50) {
+  } else {
 
     messageEl.innerText =
-      "Good effort! Keep practicing!";
-
-  }
-
-  else {
-
-    messageEl.innerText =
-      "Keep learning and try again!";
+      "💪 Keep practicing and try again!";
 
   }
 
 
-  saveResult();
+  // Save result to Firebase
 
-  showResults();
+  saveStatus.innerText =
+    "Saving your result... ⏳";
+
+
+  try {
+
+    await addDoc(collection(db, "quizResults"), {
+
+      name: userName,
+
+      score: score,
+
+      totalQuestions: questions.length,
+
+      percentage: percentage,
+
+      timestamp: serverTimestamp()
+
+    });
+
+
+    saveStatus.innerText =
+      "✅ Your result has been saved!";
+
+
+    loadRecentResults();
+
+  }
+
+  catch (error) {
+
+    console.error("Firebase Error:", error);
+
+    saveStatus.innerText =
+      "❌ Result could not be saved.";
+
+  }
 
 }
 
 
-/* SAVE RESULT */
+// ================================
+// LOAD RECENT RESULTS
+// ================================
 
-function saveResult() {
+async function loadRecentResults() {
 
-  let results =
-    JSON.parse(
-      localStorage.getItem("quizResults")
-    ) || [];
-
-
-  results.unshift({
-
-    name: playerName,
-
-    score: score,
-
-    total: questions.length,
-
-    date:
-      new Date().toLocaleString()
-
-  });
+  resultsList.innerHTML =
+    "Loading results...";
 
 
-  localStorage.setItem(
+  try {
 
-    "quizResults",
+    const resultsQuery = query(
 
-    JSON.stringify(results)
+      collection(db, "quizResults"),
 
-  );
+      orderBy("timestamp", "desc"),
 
-}
+      limit(10)
 
-
-/* SHOW SAVED RESULTS */
-
-function showResults() {
-
-  let results =
-    JSON.parse(
-      localStorage.getItem("quizResults")
-    ) || [];
+    );
 
 
-  resultsList.innerHTML = "";
+    const querySnapshot =
+      await getDocs(resultsQuery);
 
 
-  results.forEach(function (result) {
-
-    let item =
-      document.createElement("div");
+    resultsList.innerHTML = "";
 
 
-    item.classList.add("result-item");
+    querySnapshot.forEach((doc) => {
+
+      const data = doc.data();
 
 
-    item.innerHTML =
-      "<strong>" +
-      result.name +
-      "</strong><br>" +
-
-      "Score: " +
-      result.score +
-      "/" +
-      result.total +
-
-      "<br><small>" +
-
-      result.date +
-
-      "</small>";
+      const resultItem =
+        document.createElement("div");
 
 
-    resultsList.appendChild(item);
+      resultItem.classList.add("result-item");
 
-  });
+
+      resultItem.innerHTML = `
+
+        <strong>${data.name}</strong>
+
+        <span>
+          ${data.score} / ${data.totalQuestions}
+        </span>
+
+      `;
+
+
+      resultsList.appendChild(resultItem);
+
+    });
+
+
+    if (querySnapshot.empty) {
+
+      resultsList.innerHTML =
+        "No results yet.";
+
+    }
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    resultsList.innerHTML =
+      "Could not load results.";
+
+  }
 
 }
 
 
-/* PLAY AGAIN */
+// ================================
+// RESTART QUIZ
+// ================================
 
-restartBtn.onclick = function () {
-
-  resultBox.style.display = "none";
-
-  startScreen.style.display = "block";
-
-
-  userNameInput.value = "";
-
+restartBtn.addEventListener("click", () => {
 
   currentQuestion = 0;
 
   score = 0;
 
+  userNameInput.value = "";
 
-  progressBar.style.width = "0%";
+  resultBox.style.display = "none";
 
-};
+  quizScreen.style.display = "none";
+
+  startScreen.style.display = "block";
+
+});
