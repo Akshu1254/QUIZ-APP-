@@ -1,3 +1,7 @@
+/* ========================================
+   GLOBAL
+======================================== */
+
 * {
   box-sizing: border-box;
 }
@@ -16,9 +20,14 @@ body {
   background: linear-gradient(135deg, #667eea, #764ba2);
 }
 
+
+/* ========================================
+   MAIN QUIZ BOX
+======================================== */
+
 .quiz-box {
   width: 100%;
-  max-width: 600px;
+  max-width: 650px;
 
   background: white;
 
@@ -29,6 +38,11 @@ body {
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
 }
 
+
+/* ========================================
+   HEADER
+======================================== */
+
 .header {
   text-align: center;
   margin-bottom: 25px;
@@ -36,14 +50,18 @@ body {
 
 .header h1 {
   margin: 0;
+  font-size: 32px;
 }
 
 .header p {
   color: #666;
+  margin-top: 10px;
 }
 
 
-/* START SCREEN */
+/* ========================================
+   START SCREEN
+======================================== */
 
 #startScreen {
   text-align: center;
@@ -61,6 +79,8 @@ body {
   border-radius: 10px;
 
   margin: 15px 0;
+
+  transition: 0.3s;
 }
 
 #userName:focus {
@@ -69,11 +89,14 @@ body {
 }
 
 #nameError {
-  color: red;
+  color: #dc2626;
+  font-weight: bold;
 }
 
 
-/* BUTTONS */
+/* ========================================
+   BUTTONS
+======================================== */
 
 button {
   width: 100%;
@@ -95,14 +118,23 @@ button {
   cursor: pointer;
 
   margin-top: 10px;
+
+  transition: 0.2s;
 }
 
 button:hover {
   opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+button:disabled {
+  cursor: not-allowed;
 }
 
 
-/* QUIZ */
+/* ========================================
+   QUIZ
+======================================== */
 
 .welcome {
   text-align: center;
@@ -110,7 +142,14 @@ button:hover {
   font-weight: bold;
 
   color: #4f46e5;
+
+  font-size: 17px;
 }
+
+
+/* ========================================
+   PROGRESS BAR
+======================================== */
 
 .progress-container {
   width: 100%;
@@ -131,10 +170,15 @@ button:hover {
 
   width: 0%;
 
-  background: #667eea;
+  background: linear-gradient(90deg, #667eea, #764ba2);
 
-  transition: 0.3s;
+  transition: width 0.3s ease;
 }
+
+
+/* ========================================
+   QUIZ INFORMATION
+======================================== */
 
 .quiz-info {
   display: flex;
@@ -144,16 +188,62 @@ button:hover {
   font-weight: bold;
 
   color: #555;
+
+  margin-bottom: 15px;
 }
+
+
+/* ========================================
+   TIMER
+======================================== */
+
+.timer-box {
+  text-align: center;
+
+  background: #fff7ed;
+
+  border: 2px solid #fb923c;
+
+  color: #9a3412;
+
+  padding: 10px;
+
+  border-radius: 10px;
+
+  font-size: 18px;
+
+  font-weight: bold;
+
+  margin-bottom: 20px;
+}
+
+#time {
+  font-size: 22px;
+}
+
+
+/* ========================================
+   QUESTION
+======================================== */
 
 #question {
   font-size: 22px;
 
   margin-top: 25px;
+
+  line-height: 1.4;
 }
 
 
-/* ANSWERS */
+/* ========================================
+   ANSWERS
+======================================== */
+
+#answers {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
 .answer-btn {
   background: #f9fafb;
@@ -163,14 +253,22 @@ button:hover {
   border: 2px solid #e5e7eb;
 
   text-align: left;
+
+  margin-top: 0;
+
+  transition: 0.2s;
 }
 
-.answer-btn:disabled {
-  cursor: not-allowed;
+.answer-btn:hover:not(:disabled) {
+  background: #eef2ff;
+
+  border-color: #667eea;
 }
 
 
-/* CORRECT ANSWER */
+/* ========================================
+   CORRECT ANSWER
+======================================== */
 
 .correct {
   background: #d1fae5 !important;
@@ -181,7 +279,9 @@ button:hover {
 }
 
 
-/* WRONG ANSWER */
+/* ========================================
+   WRONG ANSWER
+======================================== */
 
 .wrong {
   background: #fee2e2 !important;
@@ -192,26 +292,109 @@ button:hover {
 }
 
 
-/* RESULTS */
+/* ========================================
+   NEXT BUTTON
+======================================== */
+
+#nextBtn {
+  background: #4f46e5;
+
+  margin-top: 20px;
+}
+
+
+/* ========================================
+   RESULT SCREEN
+======================================== */
 
 #resultBox {
   text-align: center;
 }
 
-.saved {
-  color: green;
+#score {
+  font-size: 28px;
 
-  font-weight: bold;
+  color: #4f46e5;
 }
+
+#message {
+  font-size: 18px;
+
+  margin: 15px 0;
+}
+
+#saveStatus {
+  font-weight: bold;
+
+  margin: 15px 0;
+}
+
+
+/* ========================================
+   RESTART BUTTON
+======================================== */
 
 #restartBtn {
   background: #16a34a;
+
+  margin-bottom: 25px;
 }
 
 
-/* SAVED RESULTS */
+/* ========================================
+   GLOBAL LEADERBOARD
+======================================== */
+
+#leaderboard {
+  margin: 15px 0 25px 0;
+}
+
+.leaderboard-item {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  background: #fff7ed;
+
+  border: 1px solid #fed7aa;
+
+  padding: 12px;
+
+  margin: 8px 0;
+
+  border-radius: 10px;
+
+  font-size: 16px;
+}
+
+.leaderboard-item span:first-child {
+  text-align: left;
+}
+
+.leaderboard-item span:last-child {
+  font-weight: bold;
+
+  color: #4f46e5;
+}
+
+
+/* ========================================
+   RECENT RESULTS
+======================================== */
+
+#resultsList {
+  margin-top: 15px;
+}
 
 .result-item {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
   background: #f3f4f6;
 
   padding: 12px;
@@ -221,4 +404,64 @@ button:hover {
   border-radius: 10px;
 
   text-align: left;
+}
+
+.result-item span {
+  font-weight: bold;
+
+  color: #4f46e5;
+}
+
+
+/* ========================================
+   MOBILE RESPONSIVE
+======================================== */
+
+@media (max-width: 600px) {
+
+  body {
+    padding: 10px;
+
+    align-items: flex-start;
+  }
+
+  .quiz-box {
+    padding: 20px;
+
+    margin-top: 10px;
+
+    border-radius: 15px;
+  }
+
+  .header h1 {
+    font-size: 26px;
+  }
+
+  .header p {
+    font-size: 14px;
+  }
+
+  #question {
+    font-size: 20px;
+  }
+
+  .quiz-info {
+    font-size: 14px;
+  }
+
+  .timer-box {
+    font-size: 16px;
+  }
+
+  button {
+    padding: 14px;
+
+    font-size: 16px;
+  }
+
+  .leaderboard-item,
+  .result-item {
+    font-size: 14px;
+  }
+
 }
