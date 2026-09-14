@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,13 +10,13 @@
   <title>Quiz Master 🧠</title>
 
   <link rel="stylesheet" href="style.css">
-
 </head>
 
 
 <body>
 
   <div class="quiz-box">
+
 
     <!-- =========================
          HEADER
@@ -28,6 +29,7 @@
       <p>Test your knowledge and challenge yourself!</p>
 
     </div>
+
 
 
     <!-- =========================
@@ -71,6 +73,7 @@
       </p>
 
 
+
       <!-- =========================
            PROGRESS BAR
       ========================== -->
@@ -80,6 +83,7 @@
         <div id="progressBar"></div>
 
       </div>
+
 
 
       <!-- =========================
@@ -99,6 +103,29 @@
       </div>
 
 
+
+      <!-- =========================
+           LIVE QUIZ STATISTICS
+      ========================== -->
+
+      <div class="quiz-stats">
+
+        <span id="correctLive">
+          Correct: 0
+        </span>
+
+        <span id="wrongLive">
+          Wrong: 0
+        </span>
+
+        <span id="answeredLive">
+          Answered: 0
+        </span>
+
+      </div>
+
+
+
       <!-- =========================
            TIMER
       ========================== -->
@@ -111,6 +138,7 @@
       </div>
 
 
+
       <!-- =========================
            QUESTION
       ========================== -->
@@ -120,11 +148,13 @@
       </h2>
 
 
+
       <!-- =========================
            ANSWERS
       ========================== -->
 
       <div id="answers"></div>
+
 
 
       <!-- =========================
@@ -150,19 +180,109 @@
       </h2>
 
 
-      <!-- FINAL SCORE -->
+
+      <!-- =========================
+           FINAL SCORE
+      ========================== -->
 
       <h2 id="score"></h2>
 
 
-      <!-- PERFORMANCE MESSAGE -->
+
+      <!-- =========================
+           PERFORMANCE MESSAGE
+      ========================== -->
 
       <p id="message"></p>
 
 
-      <!-- FIREBASE SAVE STATUS -->
+
+      <!-- =========================
+           FIREBASE SAVE STATUS
+      ========================== -->
 
       <p id="saveStatus"></p>
+
+
+
+      <!-- =========================
+           AI PERFORMANCE ANALYSIS
+      ========================== -->
+
+      <div id="aiAnalysis" style="display: none;">
+
+        <h3>🤖 AI Performance Analysis</h3>
+
+        <p>
+          Performance Level:
+          <strong id="performanceLevel">
+            -
+          </strong>
+        </p>
+
+        <p>
+          Predicted Performance:
+          <strong id="predictedScore">
+            -
+          </strong>
+        </p>
+
+        <p>
+          Weak Area:
+          <strong id="weakTopic">
+            -
+          </strong>
+        </p>
+
+        <p>
+          💡 Recommendation:
+          <strong id="recommendation">
+            -
+          </strong>
+        </p>
+
+      </div>
+
+
+
+      <!-- =========================
+           QUIZ STATISTICS
+      ========================== -->
+
+      <div id="finalStats">
+
+        <h3>📊 Quiz Statistics</h3>
+
+        <p>
+          Total Questions:
+          <strong id="totalQuestions">
+            -
+          </strong>
+        </p>
+
+        <p>
+          Correct Answers:
+          <strong id="finalCorrect">
+            -
+          </strong>
+        </p>
+
+        <p>
+          Wrong Answers:
+          <strong id="finalWrong">
+            -
+          </strong>
+        </p>
+
+        <p>
+          Percentage:
+          <strong id="finalPercentage">
+            -
+          </strong>
+        </p>
+
+      </div>
+
 
 
       <!-- =========================
@@ -172,6 +292,7 @@
       <button id="restartBtn">
         🔄 Play Again
       </button>
+
 
 
       <!-- =========================
@@ -185,6 +306,7 @@
         Loading leaderboard...
 
       </div>
+
 
 
       <!-- =========================
@@ -219,3 +341,4 @@
 </body>
 
 </html>
+```
