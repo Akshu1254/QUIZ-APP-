@@ -18,6 +18,7 @@ import {
   "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 
+
 // ========================================
 // FIREBASE CONFIGURATION
 // ========================================
@@ -33,12 +34,14 @@ const firebaseConfig = {
 };
 
 
+
 // ========================================
 // INITIALIZE FIREBASE
 // ========================================
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
 
 
 // ========================================
@@ -115,6 +118,7 @@ const questions = [
   },
 
 
+
   // ========== CSS ==========
 
   {
@@ -183,6 +187,7 @@ const questions = [
   },
 
 
+
   // ========== JAVASCRIPT ==========
 
   {
@@ -217,7 +222,12 @@ const questions = [
 
   {
     question: "Which method converts JSON text into a JavaScript object?",
-    answers: ["JSON.stringify()", "JSON.parse()", "JSON.convert()", "JSON.object()"],
+    answers: [
+      "JSON.stringify()",
+      "JSON.parse()",
+      "JSON.convert()",
+      "JSON.object()"
+    ],
     correct: 1
   },
 
@@ -254,6 +264,7 @@ const questions = [
     ],
     correct: 0
   },
+
 
 
   // ========== PYTHON ==========
@@ -317,6 +328,7 @@ const questions = [
     answers: ["catch", "try", "error", "handle"],
     correct: 1
   },
+
 
 
   // ========== AI / ML ==========
@@ -434,6 +446,37 @@ const questions = [
 ];
 
 
+
+// ========================================
+// ASSIGN TOPICS
+// ========================================
+
+questions.forEach((q, index) => {
+
+  if (index < 10) {
+    q.topic = "HTML";
+  }
+
+  else if (index < 20) {
+    q.topic = "CSS";
+  }
+
+  else if (index < 30) {
+    q.topic = "JavaScript";
+  }
+
+  else if (index < 40) {
+    q.topic = "Python";
+  }
+
+  else {
+    q.topic = "AI/ML";
+  }
+
+});
+
+
+
 // ========================================
 // VARIABLES
 // ========================================
@@ -446,39 +489,151 @@ let answered = false;
 let timeLeft = 15;
 let timer = null;
 
+let totalTimeTaken = 0;
+
+let correctAnswers = 0;
+let wrongAnswers = 0;
+let answeredQuestions = 0;
+
+
+
+// ========================================
+// TOPIC STATISTICS
+// ========================================
+
+let topicStats = {
+  HTML: {
+    correct: 0,
+    total: 0
+  },
+
+  CSS: {
+    correct: 0,
+    total: 0
+  },
+
+  JavaScript: {
+    correct: 0,
+    total: 0
+  },
+
+  Python: {
+    correct: 0,
+    total: 0
+  },
+
+  "AI/ML": {
+    correct: 0,
+    total: 0
+  }
+};
+
+
 
 // ========================================
 // GET HTML ELEMENTS
 // ========================================
 
-const startScreen = document.getElementById("startScreen");
-const quizScreen = document.getElementById("quizScreen");
-const resultBox = document.getElementById("resultBox");
+const startScreen =
+  document.getElementById("startScreen");
 
-const userNameInput = document.getElementById("userName");
-const displayName = document.getElementById("displayName");
+const quizScreen =
+  document.getElementById("quizScreen");
 
-const startBtn = document.getElementById("startBtn");
-const nextBtn = document.getElementById("nextBtn");
-const restartBtn = document.getElementById("restartBtn");
+const resultBox =
+  document.getElementById("resultBox");
 
-const questionEl = document.getElementById("question");
-const answersEl = document.getElementById("answers");
+const userNameInput =
+  document.getElementById("userName");
 
-const scoreEl = document.getElementById("score");
-const scoreLive = document.getElementById("scoreLive");
-const questionNumber = document.getElementById("questionNumber");
+const displayName =
+  document.getElementById("displayName");
 
-const progressBar = document.getElementById("progressBar");
+const startBtn =
+  document.getElementById("startBtn");
 
-const messageEl = document.getElementById("message");
-const nameError = document.getElementById("nameError");
+const nextBtn =
+  document.getElementById("nextBtn");
 
-const saveStatus = document.getElementById("saveStatus");
-const resultsList = document.getElementById("resultsList");
+const restartBtn =
+  document.getElementById("restartBtn");
 
-const timeEl = document.getElementById("time");
-const leaderboardEl = document.getElementById("leaderboard");
+const questionEl =
+  document.getElementById("question");
+
+const answersEl =
+  document.getElementById("answers");
+
+const scoreEl =
+  document.getElementById("score");
+
+const scoreLive =
+  document.getElementById("scoreLive");
+
+const questionNumber =
+  document.getElementById("questionNumber");
+
+const progressBar =
+  document.getElementById("progressBar");
+
+const messageEl =
+  document.getElementById("message");
+
+const nameError =
+  document.getElementById("nameError");
+
+const saveStatus =
+  document.getElementById("saveStatus");
+
+const resultsList =
+  document.getElementById("resultsList");
+
+const timeEl =
+  document.getElementById("time");
+
+const leaderboardEl =
+  document.getElementById("leaderboard");
+
+
+
+// New AI / ML elements
+
+const correctLive =
+  document.getElementById("correctLive");
+
+const wrongLive =
+  document.getElementById("wrongLive");
+
+const answeredLive =
+  document.getElementById("answeredLive");
+
+const aiAnalysis =
+  document.getElementById("aiAnalysis");
+
+const performanceLevel =
+  document.getElementById("performanceLevel");
+
+const predictedScore =
+  document.getElementById("predictedScore");
+
+const weakTopic =
+  document.getElementById("weakTopic");
+
+const recommendation =
+  document.getElementById("recommendation");
+
+const totalQuestionsEl =
+  document.getElementById("totalQuestions");
+
+const finalCorrect =
+  document.getElementById("finalCorrect");
+
+const finalWrong =
+  document.getElementById("finalWrong");
+
+const finalPercentage =
+  document.getElementById("finalPercentage");
+
 
 
 // ========================================
@@ -489,7 +644,8 @@ function shuffleQuestions(array) {
 
   for (let i = array.length - 1; i > 0; i--) {
 
-    const j = Math.floor(Math.random() * (i + 1));
+    const j =
+      Math.floor(Math.random() * (i + 1));
 
     [array[i], array[j]] =
       [array[j], array[i]];
@@ -499,13 +655,98 @@ function shuffleQuestions(array) {
 }
 
 
+
+// ========================================
+// RESET STATISTICS
+// ========================================
+
+function resetStatistics() {
+
+  score = 0;
+
+  correctAnswers = 0;
+
+  wrongAnswers = 0;
+
+  answeredQuestions = 0;
+
+  totalTimeTaken = 0;
+
+  topicStats = {
+
+    HTML: {
+      correct: 0,
+      total: 0
+    },
+
+    CSS: {
+      correct: 0,
+      total: 0
+    },
+
+    JavaScript: {
+      correct: 0,
+      total: 0
+    },
+
+    Python: {
+      correct: 0,
+      total: 0
+    },
+
+    "AI/ML": {
+      correct: 0,
+      total: 0
+    }
+
+  };
+
+}
+
+
+
+// ========================================
+// UPDATE LIVE STATISTICS
+// ========================================
+
+function updateLiveStats() {
+
+  scoreLive.innerText =
+    `Score: ${score}`;
+
+  if (correctLive) {
+
+    correctLive.innerText =
+      `Correct: ${correctAnswers}`;
+
+  }
+
+  if (wrongLive) {
+
+    wrongLive.innerText =
+      `Wrong: ${wrongAnswers}`;
+
+  }
+
+  if (answeredLive) {
+
+    answeredLive.innerText =
+      `Answered: ${answeredQuestions}`;
+
+  }
+
+}
+
+
+
 // ========================================
 // START QUIZ
 // ========================================
 
 startBtn.addEventListener("click", () => {
 
-  userName = userNameInput.value.trim();
+  userName =
+    userNameInput.value.trim();
 
   if (userName === "") {
 
@@ -518,22 +759,39 @@ startBtn.addEventListener("click", () => {
 
   nameError.innerText = "";
 
-  displayName.innerText = userName;
+  displayName.innerText =
+    userName;
 
-  // Random question order
-  shuffleQuestions(questions);
+  resetStatistics();
 
   currentQuestion = 0;
-  score = 0;
+
   answered = false;
 
-  startScreen.style.display = "none";
-  quizScreen.style.display = "block";
-  resultBox.style.display = "none";
+  shuffleQuestions(questions);
+
+  startScreen.style.display =
+    "none";
+
+  quizScreen.style.display =
+    "block";
+
+  resultBox.style.display =
+    "none";
+
+  if (aiAnalysis) {
+
+    aiAnalysis.style.display =
+      "none";
+
+  }
+
+  updateLiveStats();
 
   loadQuestion();
 
 });
+
 
 
 // ========================================
@@ -546,29 +804,48 @@ function startTimer() {
 
   timeLeft = 15;
 
-  timeEl.innerText = timeLeft;
+  timeEl.innerText =
+    timeLeft;
 
   timer = setInterval(() => {
 
     timeLeft--;
 
-    timeEl.innerText = timeLeft;
+    timeEl.innerText =
+      timeLeft;
 
     if (timeLeft <= 0) {
 
       clearInterval(timer);
 
-      answered = true;
+      if (!answered) {
 
-      showCorrectAnswer();
+        answered = true;
 
-      nextBtn.style.display = "block";
+        wrongAnswers++;
+
+        answeredQuestions++;
+
+        const currentTopic =
+          questions[currentQuestion].topic;
+
+        topicStats[currentTopic].total++;
+
+        updateLiveStats();
+
+        showCorrectAnswer();
+
+        nextBtn.style.display =
+          "block";
+
+      }
 
     }
 
   }, 1000);
 
 }
+
 
 
 // ========================================
@@ -598,6 +875,7 @@ function showCorrectAnswer() {
 }
 
 
+
 // ========================================
 // LOAD QUESTION
 // ========================================
@@ -606,27 +884,32 @@ function loadQuestion() {
 
   answered = false;
 
-  nextBtn.style.display = "none";
+  nextBtn.style.display =
+    "none";
 
   startTimer();
 
-  const q = questions[currentQuestion];
+  const q =
+    questions[currentQuestion];
 
-  questionEl.innerText = q.question;
+  questionEl.innerText =
+    q.question;
 
-  answersEl.innerHTML = "";
+  answersEl.innerHTML =
+    "";
 
   questionNumber.innerText =
     `Question ${currentQuestion + 1} of ${questions.length}`;
 
-  scoreLive.innerText =
-    `Score: ${score}`;
+  updateLiveStats();
 
   const progress =
-    ((currentQuestion + 1) / questions.length) * 100;
+    ((currentQuestion + 1) /
+      questions.length) * 100;
 
   progressBar.style.width =
     progress + "%";
+
 
 
   q.answers.forEach((answer, index) => {
@@ -634,28 +917,43 @@ function loadQuestion() {
     const button =
       document.createElement("button");
 
-    button.innerText = answer;
+    button.innerText =
+      answer;
 
-    button.classList.add("answer-btn");
+    button.classList.add(
+      "answer-btn"
+    );
 
-    button.addEventListener("click", () => {
+    button.addEventListener(
+      "click",
+      () => {
 
-      checkAnswer(index, button);
+        checkAnswer(
+          index,
+          button
+        );
 
-    });
+      }
+    );
 
-    answersEl.appendChild(button);
+    answersEl.appendChild(
+      button
+    );
 
   });
 
 }
 
 
+
 // ========================================
 // CHECK ANSWER
 // ========================================
 
-function checkAnswer(selectedIndex, selectedButton) {
+function checkAnswer(
+  selectedIndex,
+  selectedButton
+) {
 
   if (answered) return;
 
@@ -663,64 +961,308 @@ function checkAnswer(selectedIndex, selectedButton) {
 
   clearInterval(timer);
 
+  // Calculate time used for this question
+  const questionTimeUsed =
+    15 - timeLeft;
+
+  totalTimeTaken +=
+    questionTimeUsed;
+
+  answeredQuestions++;
+
+  const currentQ =
+    questions[currentQuestion];
+
   const correctIndex =
-    questions[currentQuestion].correct;
+    currentQ.correct;
+
+  const currentTopic =
+    currentQ.topic;
+
+  topicStats[currentTopic].total++;
 
   const buttons =
     answersEl.querySelectorAll("button");
 
+  buttons.forEach(
+    (button, index) => {
 
-  buttons.forEach((button, index) => {
+      button.disabled = true;
 
-    button.disabled = true;
+      if (index === correctIndex) {
 
-    if (index === correctIndex) {
+        button.classList.add(
+          "correct"
+        );
 
-      button.classList.add("correct");
+      }
 
     }
+  );
 
-  });
 
 
-  if (selectedIndex === correctIndex) {
+  if (
+    selectedIndex ===
+    correctIndex
+  ) {
 
     score++;
 
-    scoreLive.innerText =
-      `Score: ${score}`;
+    correctAnswers++;
 
-  } else {
+    topicStats[currentTopic].correct++;
 
-    selectedButton.classList.add("wrong");
+  }
+
+  else {
+
+    wrongAnswers++;
+
+    selectedButton.classList.add(
+      "wrong"
+    );
 
   }
 
 
-  nextBtn.style.display = "block";
+
+  updateLiveStats();
+
+  nextBtn.style.display =
+    "block";
 
 }
+
 
 
 // ========================================
 // NEXT QUESTION
 // ========================================
 
-nextBtn.addEventListener("click", () => {
+nextBtn.addEventListener(
+  "click",
+  () => {
 
-  currentQuestion++;
+    currentQuestion++;
 
-  if (currentQuestion < questions.length) {
+    if (
+      currentQuestion <
+      questions.length
+    ) {
 
-    loadQuestion();
+      loadQuestion();
 
-  } else {
+    }
 
-    showResult();
+    else {
+
+      showResult();
+
+    }
+
+  }
+);
+
+
+
+// ========================================
+// GET PERFORMANCE LEVEL
+// ========================================
+
+function getPerformanceLevel(
+  percentage
+) {
+
+  if (percentage >= 90) {
+
+    return "Excellent 🏆";
 
   }
 
-});
+  if (percentage >= 75) {
+
+    return "Good 🟢";
+
+  }
+
+  if (percentage >= 50) {
+
+    return "Average 🟡";
+
+  }
+
+  return "Needs Improvement 🔴";
+
+}
+
+
+
+// ========================================
+// FIND WEAK TOPIC
+// ========================================
+
+function findWeakTopic() {
+
+  let weakestTopic =
+    "None";
+
+  let lowestPercentage =
+    101;
+
+  for (
+    const topic in topicStats
+  ) {
+
+    const data =
+      topicStats[topic];
+
+    if (data.total === 0) {
+
+      continue;
+
+    }
+
+    const topicPercentage =
+      (data.correct /
+        data.total) * 100;
+
+    if (
+      topicPercentage <
+      lowestPercentage
+    ) {
+
+      lowestPercentage =
+        topicPercentage;
+
+      weakestTopic =
+        topic;
+
+    }
+
+  }
+
+  return weakestTopic;
+
+}
+
+
+
+// ========================================
+// GET RECOMMENDATION
+// ========================================
+
+function getRecommendation(
+  weakTopic,
+  percentage
+) {
+
+  if (
+    percentage >= 90
+  ) {
+
+    return "Excellent performance! Keep practicing all topics and try advanced questions.";
+
+  }
+
+  if (
+    weakTopic === "None"
+  ) {
+
+    return "Continue practicing regularly to improve your knowledge.";
+
+  }
+
+  if (
+    percentage >= 75
+  ) {
+
+    return `Good performance. Focus more on ${weakTopic} to reach an excellent level.`;
+
+  }
+
+  if (
+    percentage >= 50
+  ) {
+
+    return `You need more practice. Give extra attention to ${weakTopic}.`;
+
+  }
+
+  return `Your performance needs improvement. Start with ${weakTopic} basics and practice daily.`;
+
+}
+
+
+
+// ========================================
+// AI PERFORMANCE ANALYSIS
+// ========================================
+
+function generateAIAnalysis(
+  percentage
+) {
+
+  const level =
+    getPerformanceLevel(
+      percentage
+    );
+
+  const weak =
+    findWeakTopic();
+
+  const predicted =
+    Math.min(
+      100,
+      Math.round(
+        percentage +
+        (percentage >= 75 ? 3 : 8)
+      )
+    );
+
+  const advice =
+    getRecommendation(
+      weak,
+      percentage
+    );
+
+  if (performanceLevel) {
+
+    performanceLevel.innerText =
+      level;
+
+  }
+
+  if (predictedScore) {
+
+    predictedScore.innerText =
+      `${predicted}%`;
+
+  }
+
+  if (weakTopic) {
+
+    weakTopic.innerText =
+      weak;
+
+  }
+
+  if (recommendation) {
+
+    recommendation.innerText =
+      advice;
+
+  }
+
+  if (aiAnalysis) {
+
+    aiAnalysis.style.display =
+      "block";
+
+  }
+
+}
+
 
 
 // ========================================
@@ -731,32 +1273,53 @@ async function showResult() {
 
   clearInterval(timer);
 
-  quizScreen.style.display = "none";
-  resultBox.style.display = "block";
+  quizScreen.style.display =
+    "none";
+
+  resultBox.style.display =
+    "block";
+
+
+
+  const percentage =
+    Math.round(
+      (score /
+        questions.length) * 100
+    );
+
+
 
   scoreEl.innerText =
     `Your Score: ${score} / ${questions.length}`;
 
-  const percentage =
-    Math.round((score / questions.length) * 100);
 
+
+  // ========================================
+  // PERFORMANCE MESSAGE
+  // ========================================
 
   if (percentage === 100) {
 
     messageEl.innerText =
       "🏆 Perfect! Amazing performance!";
 
-  } else if (percentage >= 80) {
+  }
+
+  else if (percentage >= 80) {
 
     messageEl.innerText =
       "🔥 Excellent! Great job!";
 
-  } else if (percentage >= 60) {
+  }
+
+  else if (percentage >= 60) {
 
     messageEl.innerText =
       "👏 Good job! Keep learning!";
 
-  } else {
+  }
+
+  else {
 
     messageEl.innerText =
       "💪 Keep practicing and try again!";
@@ -764,31 +1327,149 @@ async function showResult() {
   }
 
 
+
+  // ========================================
+  // FINAL STATISTICS
+  // ========================================
+
+  if (totalQuestionsEl) {
+
+    totalQuestionsEl.innerText =
+      questions.length;
+
+  }
+
+  if (finalCorrect) {
+
+    finalCorrect.innerText =
+      correctAnswers;
+
+  }
+
+  if (finalWrong) {
+
+    finalWrong.innerText =
+      wrongAnswers;
+
+  }
+
+  if (finalPercentage) {
+
+    finalPercentage.innerText =
+      `${percentage}%`;
+
+  }
+
+
+
+  // ========================================
+  // AI ANALYSIS
+  // ========================================
+
+  generateAIAnalysis(
+    percentage
+  );
+
+
+
+  // ========================================
   // SAVE RESULT
+  // ========================================
 
   saveStatus.innerText =
     "Saving your result... ⏳";
 
 
+
   try {
 
-    await addDoc(collection(db, "quizResults"), {
+    const weak =
+      findWeakTopic();
 
-      name: userName,
+    const level =
+      getPerformanceLevel(
+        percentage
+      );
 
-      score: score,
+    const predicted =
+      Math.min(
+        100,
+        Math.round(
+          percentage +
+          (percentage >= 75 ? 3 : 8)
+        )
+      );
 
-      totalQuestions: questions.length,
 
-      percentage: percentage,
 
-      timestamp: serverTimestamp()
+    await addDoc(
+      collection(
+        db,
+        "quizResults"
+      ),
+      {
 
-    });
+        name: userName,
+
+        score: score,
+
+        totalQuestions:
+          questions.length,
+
+        percentage:
+          percentage,
+
+        correctAnswers:
+          correctAnswers,
+
+        wrongAnswers:
+          wrongAnswers,
+
+        answeredQuestions:
+          answeredQuestions,
+
+        totalTimeTaken:
+          totalTimeTaken,
+
+        performanceLevel:
+          level,
+
+        predictedPerformance:
+          predicted,
+
+        weakTopic:
+          weak,
+
+        topicPerformance: {
+
+          HTML:
+            topicStats.HTML,
+
+          CSS:
+            topicStats.CSS,
+
+          JavaScript:
+            topicStats.JavaScript,
+
+          Python:
+            topicStats.Python,
+
+          AI_ML:
+            topicStats["AI/ML"]
+
+        },
+
+        timestamp:
+          serverTimestamp()
+
+      }
+    );
+
 
 
     saveStatus.innerText =
       "✅ Your result has been saved!";
+
 
 
     await loadRecentResults();
@@ -799,18 +1480,22 @@ async function showResult() {
 
   catch (error) {
 
-    console.error("Firebase Error:", error);
+    console.error(
+      "Firebase Error:",
+      error
+    );
 
     saveStatus.innerText =
       "❌ Result could not be saved.";
 
-    // Try loading existing data
     loadRecentResults();
+
     loadLeaderboard();
 
   }
 
 }
+
 
 
 // ========================================
@@ -823,27 +1508,43 @@ async function loadRecentResults() {
     "Loading results...";
 
 
+
   try {
 
-    const resultsQuery = query(
+    const resultsQuery =
+      query(
 
-      collection(db, "quizResults"),
+        collection(
+          db,
+          "quizResults"
+        ),
 
-      orderBy("timestamp", "desc"),
+        orderBy(
+          "timestamp",
+          "desc"
+        ),
 
-      limit(10)
+        limit(10)
 
-    );
+      );
+
 
 
     const querySnapshot =
-      await getDocs(resultsQuery);
+      await getDocs(
+        resultsQuery
+      );
 
 
-    resultsList.innerHTML = "";
+
+    resultsList.innerHTML =
+      "";
 
 
-    if (querySnapshot.empty) {
+
+    if (
+      querySnapshot.empty
+    ) {
 
       resultsList.innerHTML =
         "No results yet.";
@@ -853,23 +1554,35 @@ async function loadRecentResults() {
     }
 
 
-    querySnapshot.forEach((doc) => {
 
-      const data = doc.data();
+    querySnapshot.forEach(
+      (doc) => {
 
-      const resultItem =
-        document.createElement("div");
+        const data =
+          doc.data();
 
-      resultItem.classList.add("result-item");
+        const resultItem =
+          document.createElement(
+            "div"
+          );
 
-      resultItem.innerHTML = `
-        <strong>${data.name}</strong>
-        <span>${data.score} / ${data.totalQuestions}</span>
-      `;
+        resultItem.classList.add(
+          "result-item"
+        );
 
-      resultsList.appendChild(resultItem);
 
-    });
+
+        resultItem.innerHTML = `
+          <strong>${data.name}</strong>
+          <span>${data.score} / ${data.totalQuestions}</span>
+        `;
+
+        resultsList.appendChild(
+          resultItem
+        );
+
+      }
+    );
 
   }
 
@@ -888,6 +1601,7 @@ async function loadRecentResults() {
 }
 
 
+
 // ========================================
 // GLOBAL LEADERBOARD
 // ========================================
@@ -898,27 +1612,43 @@ async function loadLeaderboard() {
     "Loading leaderboard...";
 
 
+
   try {
 
-    const leaderboardQuery = query(
+    const leaderboardQuery =
+      query(
 
-      collection(db, "quizResults"),
+        collection(
+          db,
+          "quizResults"
+        ),
 
-      orderBy("score", "desc"),
+        orderBy(
+          "score",
+          "desc"
+        ),
 
-      limit(10)
+        limit(10)
 
-    );
+      );
+
 
 
     const snapshot =
-      await getDocs(leaderboardQuery);
+      await getDocs(
+        leaderboardQuery
+      );
 
 
-    leaderboardEl.innerHTML = "";
+
+    leaderboardEl.innerHTML =
+      "";
 
 
-    if (snapshot.empty) {
+
+    if (
+      snapshot.empty
+    ) {
 
       leaderboardEl.innerHTML =
         "No players yet.";
@@ -928,61 +1658,80 @@ async function loadLeaderboard() {
     }
 
 
+
     let rank = 1;
 
 
-    snapshot.forEach((doc) => {
 
-      const data = doc.data();
+    snapshot.forEach(
+      (doc) => {
 
-      const item =
-        document.createElement("div");
+        const data =
+          doc.data();
 
-      item.classList.add(
-        "leaderboard-item"
-      );
+        const item =
+          document.createElement(
+            "div"
+          );
+
+        item.classList.add(
+          "leaderboard-item"
+        );
 
 
-      let medal = "";
 
-      if (rank === 1) {
+        let medal = "";
 
-        medal = "🥇";
+        if (rank === 1) {
 
-      } else if (rank === 2) {
+          medal = "🥇";
 
-        medal = "🥈";
+        }
 
-      } else if (rank === 3) {
+        else if (rank === 2) {
 
-        medal = "🥉";
+          medal = "🥈";
 
-      } else {
+        }
 
-        medal = `#${rank}`;
+        else if (rank === 3) {
+
+          medal = "🥉";
+
+        }
+
+        else {
+
+          medal =
+            `#${rank}`;
+
+        }
+
+
+
+        item.innerHTML = `
+
+          <span>
+            ${medal}
+            <strong>${data.name}</strong>
+          </span>
+
+          <span>
+            ${data.score}/${data.totalQuestions}
+          </span>
+
+        `;
+
+
+
+        leaderboardEl.appendChild(
+          item
+        );
+
+        rank++;
 
       }
-
-
-      item.innerHTML = `
-
-        <span>
-          ${medal}
-          <strong>${data.name}</strong>
-        </span>
-
-        <span>
-          ${data.score}/${data.totalQuestions}
-        </span>
-
-      `;
-
-
-      leaderboardEl.appendChild(item);
-
-      rank++;
-
-    });
+    );
 
   }
 
@@ -1001,22 +1750,80 @@ async function loadLeaderboard() {
 }
 
 
+
 // ========================================
 // RESTART QUIZ
 // ========================================
 
-restartBtn.addEventListener("click", () => {
+restartBtn.addEventListener(
+  "click",
+  () => {
 
-  clearInterval(timer);
+    clearInterval(timer);
 
-  currentQuestion = 0;
-  score = 0;
-  answered = false;
+    currentQuestion = 0;
 
-  userNameInput.value = "";
+    answered = false;
 
-  resultBox.style.display = "none";
-  quizScreen.style.display = "none";
-  startScreen.style.display = "block";
+    resetStatistics();
 
-});
+    userNameInput.value =
+      "";
+
+    displayName.innerText =
+      "";
+
+    scoreLive.innerText =
+      "Score: 0";
+
+    timeEl.innerText =
+      "15";
+
+    if (correctLive) {
+
+      correctLive.innerText =
+        "Correct: 0";
+
+    }
+
+    if (wrongLive) {
+
+      wrongLive.innerText =
+        "Wrong: 0";
+
+    }
+
+    if (answeredLive) {
+
+      answeredLive.innerText =
+        "Answered: 0";
+
+    }
+
+    if (aiAnalysis) {
+
+      aiAnalysis.style.display =
+        "none";
+
+    }
+
+    resultBox.style.display =
+      "none";
+
+    quizScreen.style.display =
+      "none";
+
+    startScreen.style.display =
+      "block";
+
+  }
+);
+
+
+
+// ========================================
+// INITIAL LOAD
+// ========================================
+
+loadRecentResults();
+loadLeaderboard();
