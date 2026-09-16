@@ -1,1829 +1,1540 @@
-// ========================================
+// ======================================================
 // FIREBASE IMPORTS
-// ========================================
+// ======================================================
 
-import { initializeApp } from
-  "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
 
 import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  query,
-  orderBy,
-  limit,
-  serverTimestamp
-} from
-  "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs,
+    query,
+    orderBy,
+    limit,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 
-
-// ========================================
-// FIREBASE CONFIGURATION
-// ========================================
+// ======================================================
+// FIREBASE CONFIG
+// ======================================================
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDNMtxRnq2Hll8ggtVqri2M8WGezifZ4Kk",
-  authDomain: "quiz-master-5c85b.firebaseapp.com",
-  projectId: "quiz-master-5c85b",
-  storageBucket: "quiz-master-5c85b.firebasestorage.app",
-  messagingSenderId: "91642115736",
-  appId: "1:91642115736:web:0cac62878f9da6f45cc2ed",
-  measurementId: "G-ZKRT9Y9R0X"
+    apiKey: "AIzaSyDNMtxRnq2Hll8ggtVqri2M8WGezifZ4Kk",
+    authDomain: "quiz-master-5c85b.firebaseapp.com",
+    projectId: "quiz-master-5c85b",
+    storageBucket: "quiz-master-5c85b.firebasestorage.app",
+    messagingSenderId: "91642115736",
+    appId: "1:91642115736:web:0cac62878f9da6f45cc2ed",
+    measurementId: "G-ZKRT9Y9R0X"
 };
 
 
-
-// ========================================
-// INITIALIZE FIREBASE
-// ========================================
+// Initialize Firebase
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 
+// ======================================================
+// DOM ELEMENTS
+// ======================================================
 
-// ========================================
-// QUIZ QUESTIONS
-// ========================================
-
-const questions = [
-
-  // ========== HTML ==========
-
-  {
-    question: "What does HTML stand for?",
-    answers: [
-      "Hyper Text Markup Language",
-      "High Text Machine Language",
-      "Hyper Tool Multi Language",
-      "Home Text Markup Language"
-    ],
-    correct: 0
-  },
-
-  {
-    question: "Which HTML tag is used to create a hyperlink?",
-    answers: ["<link>", "<a>", "<href>", "<url>"],
-    correct: 1
-  },
-
-  {
-    question: "Which HTML tag is used for the largest heading?",
-    answers: ["<h6>", "<heading>", "<h1>", "<head>"],
-    correct: 2
-  },
-
-  {
-    question: "Which tag is used to insert an image?",
-    answers: ["<image>", "<img>", "<picture>", "<src>"],
-    correct: 1
-  },
-
-  {
-    question: "Which attribute provides alternative text for an image?",
-    answers: ["title", "alt", "src", "href"],
-    correct: 1
-  },
-
-  {
-    question: "Which HTML tag is used to create a paragraph?",
-    answers: ["<para>", "<p>", "<paragraph>", "<text>"],
-    correct: 1
-  },
-
-  {
-    question: "Which tag is used to create an unordered list?",
-    answers: ["<ol>", "<ul>", "<li>", "<list>"],
-    correct: 1
-  },
-
-  {
-    question: "Which tag is used for a line break?",
-    answers: ["<break>", "<br>", "<lb>", "<hr>"],
-    correct: 1
-  },
-
-  {
-    question: "Which HTML section contains metadata?",
-    answers: ["<body>", "<footer>", "<head>", "<main>"],
-    correct: 2
-  },
-
-  {
-    question: "Which attribute gives an HTML element a unique identifier?",
-    answers: ["class", "name", "id", "style"],
-    correct: 2
-  },
-
-
-
-  // ========== CSS ==========
-
-  {
-    question: "What does CSS stand for?",
-    answers: [
-      "Computer Style Sheets",
-      "Cascading Style Sheets",
-      "Creative Style System",
-      "Colorful Style Sheets"
-    ],
-    correct: 1
-  },
-
-  {
-    question: "Which CSS property changes text color?",
-    answers: ["font-color", "text-color", "color", "background-color"],
-    correct: 2
-  },
-
-  {
-    question: "Which CSS property changes the background color?",
-    answers: ["color", "background-color", "bgcolor", "background"],
-    correct: 1
-  },
-
-  {
-    question: "Which symbol is used for a CSS class selector?",
-    answers: [".", "#", "*", "@"],
-    correct: 0
-  },
-
-  {
-    question: "Which symbol is used for an ID selector in CSS?",
-    answers: [".", "#", "*", "&"],
-    correct: 1
-  },
-
-  {
-    question: "Which CSS property makes text bold?",
-    answers: ["font-style", "font-weight", "text-bold", "font-size"],
-    correct: 1
-  },
-
-  {
-    question: "Which CSS property controls text size?",
-    answers: ["font-size", "text-size", "size", "font-weight"],
-    correct: 0
-  },
-
-  {
-    question: "Which property adds space inside an element?",
-    answers: ["margin", "padding", "border", "spacing"],
-    correct: 1
-  },
-
-  {
-    question: "Which property adds space outside an element?",
-    answers: ["padding", "margin", "border", "gap"],
-    correct: 1
-  },
-
-  {
-    question: "Which CSS system is commonly used for flexible layouts?",
-    answers: ["Flexbox", "HTML", "Python", "SQL"],
-    correct: 0
-  },
-
-
-
-  // ========== JAVASCRIPT ==========
-
-  {
-    question: "JavaScript is mainly used to make websites?",
-    answers: ["Static", "Interactive", "Offline only", "Printed"],
-    correct: 1
-  },
-
-  {
-    question: "Which keyword can declare a variable in JavaScript?",
-    answers: ["var", "int", "string", "define"],
-    correct: 0
-  },
-
-  {
-    question: "Which keyword creates a constant in JavaScript?",
-    answers: ["let", "var", "const", "static"],
-    correct: 2
-  },
-
-  {
-    question: "Which function displays a message in the browser console?",
-    answers: ["print()", "console.log()", "display()", "echo()"],
-    correct: 1
-  },
-
-  {
-    question: "Which operator checks both value and data type?",
-    answers: ["==", "=", "===", "!="],
-    correct: 2
-  },
-
-  {
-    question: "Which method converts JSON text into a JavaScript object?",
-    answers: [
-      "JSON.stringify()",
-      "JSON.parse()",
-      "JSON.convert()",
-      "JSON.object()"
-    ],
-    correct: 1
-  },
-
-  {
-    question: "Which event occurs when a user clicks an element?",
-    answers: ["onchange", "onclick", "onload", "onsubmit"],
-    correct: 1
-  },
-
-  {
-    question: "Which keyword creates a block-scoped variable?",
-    answers: ["var", "let", "int", "define"],
-    correct: 1
-  },
-
-  {
-    question: "What does DOM stand for?",
-    answers: [
-      "Document Object Model",
-      "Data Object Model",
-      "Digital Output Method",
-      "Document Order Method"
-    ],
-    correct: 0
-  },
-
-  {
-    question: "Which method selects an element using its ID?",
-    answers: [
-      "getElementById()",
-      "getElementByClass()",
-      "selectElement()",
-      "findElement()"
-    ],
-    correct: 0
-  },
-
-
-
-  // ========== PYTHON ==========
-
-  {
-    question: "Which keyword is used to define a function in Python?",
-    answers: ["function", "func", "def", "define"],
-    correct: 2
-  },
-
-  {
-    question: "Which function displays output in Python?",
-    answers: ["console.log()", "echo()", "print()", "display()"],
-    correct: 2
-  },
-
-  {
-    question: "Which symbol is used for comments in Python?",
-    answers: ["//", "#", "/*", "--"],
-    correct: 1
-  },
-
-  {
-    question: "Which data type stores True or False?",
-    answers: ["int", "str", "bool", "float"],
-    correct: 2
-  },
-
-  {
-    question: "Which brackets are used for a Python list?",
-    answers: ["()", "{}", "[]", "<>"],
-    correct: 2
-  },
-
-  {
-    question: "Which keyword is commonly used to loop over a sequence?",
-    answers: ["while", "for", "loop", "repeat"],
-    correct: 1
-  },
-
-  {
-    question: "What is the file extension for Python files?",
-    answers: [".java", ".py", ".js", ".html"],
-    correct: 1
-  },
-
-  {
-    question: "Which function gets user input in Python?",
-    answers: ["get()", "input()", "read()", "scan()"],
-    correct: 1
-  },
-
-  {
-    question: "Which operator is used for exponentiation in Python?",
-    answers: ["^", "**", "//", "%"],
-    correct: 1
-  },
-
-  {
-    question: "Which keyword is used to begin exception handling?",
-    answers: ["catch", "try", "error", "handle"],
-    correct: 1
-  },
-
-
-
-  // ========== AI / ML ==========
-
-  {
-    question: "What does AI stand for?",
-    answers: [
-      "Artificial Intelligence",
-      "Automatic Intelligence",
-      "Advanced Internet",
-      "Artificial Integration"
-    ],
-    correct: 0
-  },
-
-  {
-    question: "What does ML stand for?",
-    answers: [
-      "Machine Learning",
-      "Manual Learning",
-      "Model Language",
-      "Machine Logic"
-    ],
-    correct: 0
-  },
-
-  {
-    question: "Which is a type of Machine Learning?",
-    answers: [
-      "Supervised Learning",
-      "Unsupervised Learning",
-      "Reinforcement Learning",
-      "All of these"
-    ],
-    correct: 3
-  },
-
-  {
-    question: "In supervised learning, training data is usually?",
-    answers: [
-      "Labeled",
-      "Always empty",
-      "Unstructured only",
-      "Without input"
-    ],
-    correct: 0
-  },
-
-  {
-    question: "Which algorithm is commonly used for classification?",
-    answers: [
-      "Linear Regression",
-      "Logistic Regression",
-      "Sorting",
-      "HTML"
-    ],
-    correct: 1
-  },
-
-  {
-    question: "Which algorithm predicts continuous values?",
-    answers: [
-      "Linear Regression",
-      "K-Means",
-      "HTML",
-      "CSS"
-    ],
-    correct: 0
-  },
-
-  {
-    question: "What is a dataset?",
-    answers: [
-      "A collection of data",
-      "A programming language",
-      "A web browser",
-      "A computer virus"
-    ],
-    correct: 0
-  },
-
-  {
-    question: "What does CNN stand for in Deep Learning?",
-    answers: [
-      "Computer Neural Network",
-      "Convolutional Neural Network",
-      "Central Network Node",
-      "Common Neural Node"
-    ],
-    correct: 1
-  },
-
-  {
-    question: "What is overfitting in Machine Learning?",
-    answers: [
-      "Model performs well on training data but poorly on new data",
-      "Model never learns",
-      "Computer shuts down",
-      "Data is deleted"
-    ],
-    correct: 0
-  },
-
-  {
-    question: "Which Python library is widely used for Machine Learning?",
-    answers: [
-      "scikit-learn",
-      "HTML",
-      "CSS",
-      "Bootstrap"
-    ],
-    correct: 0
-  }
-
-];
-
-
-
-// ========================================
-// ASSIGN TOPICS
-// ========================================
-
-questions.forEach((q, index) => {
-
-  if (index < 10) {
-    q.topic = "HTML";
-  }
-
-  else if (index < 20) {
-    q.topic = "CSS";
-  }
-
-  else if (index < 30) {
-    q.topic = "JavaScript";
-  }
-
-  else if (index < 40) {
-    q.topic = "Python";
-  }
-
-  else {
-    q.topic = "AI/ML";
-  }
-
-});
-
-
-
-// ========================================
-// VARIABLES
-// ========================================
+const startScreen = document.getElementById("startScreen");
+const quizScreen = document.getElementById("quizScreen");
+const resultBox = document.getElementById("resultBox");
+
+const userNameInput = document.getElementById("userName");
+const displayName = document.getElementById("displayName");
+
+const startBtn = document.getElementById("startBtn");
+const nextBtn = document.getElementById("nextBtn");
+const restartBtn = document.getElementById("restartBtn");
+
+const questionElement = document.getElementById("question");
+const answersElement = document.getElementById("answers");
+
+const timerElement = document.getElementById("timer");
+const questionNumberElement = document.getElementById("questionNumber");
+const progressBar = document.getElementById("progressBar");
+
+const scoreLive = document.getElementById("scoreLive");
+const correctLive = document.getElementById("correctLive");
+const wrongLive = document.getElementById("wrongLive");
+const answeredLive = document.getElementById("answeredLive");
+
+const totalQuestionsElement =
+    document.getElementById("totalQuestions");
+
+const finalCorrect =
+    document.getElementById("finalCorrect");
+
+const finalWrong =
+    document.getElementById("finalWrong");
+
+const finalPercentage =
+    document.getElementById("finalPercentage");
+
+const performanceLevel =
+    document.getElementById("performanceLevel");
+
+const predictedScore =
+    document.getElementById("predictedScore");
+
+const weakTopic =
+    document.getElementById("weakTopic");
+
+const recommendation =
+    document.getElementById("recommendation");
+
+const aiAnalysis =
+    document.getElementById("aiAnalysis");
+
+const saveStatus =
+    document.getElementById("saveStatus");
+
+const resultsList =
+    document.getElementById("resultsList");
+
+const leaderboard =
+    document.getElementById("leaderboard");
+
+const nameError =
+    document.getElementById("nameError");
+
+
+// ======================================================
+// QUIZ VARIABLES
+// ======================================================
 
 let currentQuestion = 0;
+
 let score = 0;
+
 let userName = "";
-let answered = false;
+
+let timer;
 
 let timeLeft = 15;
-let timer = null;
+
+let answered = false;
 
 let totalTimeTaken = 0;
 
 let correctAnswers = 0;
+
 let wrongAnswers = 0;
+
 let answeredQuestions = 0;
 
 
-
-// ========================================
+// ======================================================
 // TOPIC STATISTICS
-// ========================================
+// ======================================================
 
 let topicStats = {
-  HTML: {
-    correct: 0,
-    total: 0
-  },
-
-  CSS: {
-    correct: 0,
-    total: 0
-  },
-
-  JavaScript: {
-    correct: 0,
-    total: 0
-  },
-
-  Python: {
-    correct: 0,
-    total: 0
-  },
-
-  "AI/ML": {
-    correct: 0,
-    total: 0
-  }
-};
-
-
-
-// ========================================
-// GET HTML ELEMENTS
-// ========================================
-
-const startScreen =
-  document.getElementById("startScreen");
-
-const quizScreen =
-  document.getElementById("quizScreen");
-
-const resultBox =
-  document.getElementById("resultBox");
-
-const userNameInput =
-  document.getElementById("userName");
-
-const displayName =
-  document.getElementById("displayName");
-
-const startBtn =
-  document.getElementById("startBtn");
-
-const nextBtn =
-  document.getElementById("nextBtn");
-
-const restartBtn =
-  document.getElementById("restartBtn");
-
-const questionEl =
-  document.getElementById("question");
-
-const answersEl =
-  document.getElementById("answers");
-
-const scoreEl =
-  document.getElementById("score");
-
-const scoreLive =
-  document.getElementById("scoreLive");
-
-const questionNumber =
-  document.getElementById("questionNumber");
-
-const progressBar =
-  document.getElementById("progressBar");
-
-const messageEl =
-  document.getElementById("message");
-
-const nameError =
-  document.getElementById("nameError");
-
-const saveStatus =
-  document.getElementById("saveStatus");
-
-const resultsList =
-  document.getElementById("resultsList");
-
-const timeEl =
-  document.getElementById("time");
-
-const leaderboardEl =
-  document.getElementById("leaderboard");
-
-
-
-// New AI / ML elements
-
-const correctLive =
-  document.getElementById("correctLive");
-
-const wrongLive =
-  document.getElementById("wrongLive");
-
-const answeredLive =
-  document.getElementById("answeredLive");
-
-const aiAnalysis =
-  document.getElementById("aiAnalysis");
-
-const performanceLevel =
-  document.getElementById("performanceLevel");
-
-const predictedScore =
-  document.getElementById("predictedScore");
-
-const weakTopic =
-  document.getElementById("weakTopic");
-
-const recommendation =
-  document.getElementById("recommendation");
-
-const totalQuestionsEl =
-  document.getElementById("totalQuestions");
-
-const finalCorrect =
-  document.getElementById("finalCorrect");
-
-const finalWrong =
-  document.getElementById("finalWrong");
-
-const finalPercentage =
-  document.getElementById("finalPercentage");
-
-
-
-// ========================================
-// SHUFFLE QUESTIONS
-// ========================================
-
-function shuffleQuestions(array) {
-
-  for (let i = array.length - 1; i > 0; i--) {
-
-    const j =
-      Math.floor(Math.random() * (i + 1));
-
-    [array[i], array[j]] =
-      [array[j], array[i]];
-
-  }
-
-}
-
-
-
-// ========================================
-// RESET STATISTICS
-// ========================================
-
-function resetStatistics() {
-
-  score = 0;
-
-  correctAnswers = 0;
-
-  wrongAnswers = 0;
-
-  answeredQuestions = 0;
-
-  totalTimeTaken = 0;
-
-  topicStats = {
-
-    HTML: {
-      correct: 0,
-      total: 0
+    "HTML": {
+        correct: 0,
+        total: 0
     },
 
-    CSS: {
-      correct: 0,
-      total: 0
+    "CSS": {
+        correct: 0,
+        total: 0
     },
 
-    JavaScript: {
-      correct: 0,
-      total: 0
+    "JavaScript": {
+        correct: 0,
+        total: 0
     },
 
-    Python: {
-      correct: 0,
-      total: 0
+    "Python": {
+        correct: 0,
+        total: 0
     },
 
     "AI/ML": {
-      correct: 0,
-      total: 0
+        correct: 0,
+        total: 0
+    }
+};
+
+
+// ======================================================
+// QUESTIONS
+// ======================================================
+
+let questions = [
+
+    // ================= HTML =================
+
+    {
+        question: "What does HTML stand for?",
+        answers: [
+            "Hyper Text Markup Language",
+            "High Text Machine Language",
+            "Hyperlink Text Management Language",
+            "Home Tool Markup Language"
+        ],
+        correct: 0,
+        topic: "HTML"
+    },
+
+    {
+        question: "Which tag is used for the largest heading?",
+        answers: [
+            "<h6>",
+            "<h1>",
+            "<heading>",
+            "<head>"
+        ],
+        correct: 1,
+        topic: "HTML"
+    },
+
+    {
+        question: "Which tag is used to create a paragraph?",
+        answers: [
+            "<p>",
+            "<para>",
+            "<paragraph>",
+            "<text>"
+        ],
+        correct: 0,
+        topic: "HTML"
+    },
+
+    {
+        question: "Which tag is used to create a hyperlink?",
+        answers: [
+            "<link>",
+            "<a>",
+            "<href>",
+            "<url>"
+        ],
+        correct: 1,
+        topic: "HTML"
+    },
+
+    {
+        question: "Which attribute specifies the image path?",
+        answers: [
+            "href",
+            "src",
+            "path",
+            "link"
+        ],
+        correct: 1,
+        topic: "HTML"
+    },
+
+    {
+        question: "Which HTML tag is used to create a table?",
+        answers: [
+            "<table>",
+            "<tab>",
+            "<tr>",
+            "<data>"
+        ],
+        correct: 0,
+        topic: "HTML"
+    },
+
+    {
+        question: "Which tag creates a line break?",
+        answers: [
+            "<break>",
+            "<lb>",
+            "<br>",
+            "<line>"
+        ],
+        correct: 2,
+        topic: "HTML"
+    },
+
+    {
+        question: "Which tag is used for an unordered list?",
+        answers: [
+            "<ol>",
+            "<ul>",
+            "<list>",
+            "<li>"
+        ],
+        correct: 1,
+        topic: "HTML"
+    },
+
+    {
+        question: "Which tag is used to create a form?",
+        answers: [
+            "<form>",
+            "<input>",
+            "<field>",
+            "<data>"
+        ],
+        correct: 0,
+        topic: "HTML"
+    },
+
+    {
+        question: "Which HTML element is used to display an image?",
+        answers: [
+            "<image>",
+            "<img>",
+            "<picture>",
+            "<src>"
+        ],
+        correct: 1,
+        topic: "HTML"
+    },
+
+
+    // ================= CSS =================
+
+    {
+        question: "What does CSS stand for?",
+        answers: [
+            "Cascading Style Sheets",
+            "Computer Style Sheets",
+            "Creative Style System",
+            "Colorful Style Sheets"
+        ],
+        correct: 0,
+        topic: "CSS"
+    },
+
+    {
+        question: "Which property changes text color?",
+        answers: [
+            "font-color",
+            "text-color",
+            "color",
+            "foreground"
+        ],
+        correct: 2,
+        topic: "CSS"
+    },
+
+    {
+        question: "Which property changes the background color?",
+        answers: [
+            "background-color",
+            "bgcolor",
+            "background",
+            "color-background"
+        ],
+        correct: 0,
+        topic: "CSS"
+    },
+
+    {
+        question: "Which property changes font size?",
+        answers: [
+            "font-style",
+            "font-size",
+            "text-size",
+            "size"
+        ],
+        correct: 1,
+        topic: "CSS"
+    },
+
+    {
+        question: "Which CSS property makes text bold?",
+        answers: [
+            "font-weight",
+            "font-bold",
+            "text-bold",
+            "bold"
+        ],
+        correct: 0,
+        topic: "CSS"
+    },
+
+    {
+        question: "Which symbol represents a class selector?",
+        answers: [
+            "#",
+            ".",
+            "@",
+            "$"
+        ],
+        correct: 1,
+        topic: "CSS"
+    },
+
+    {
+        question: "Which symbol represents an ID selector?",
+        answers: [
+            ".",
+            "#",
+            "@",
+            "&"
+        ],
+        correct: 1,
+        topic: "CSS"
+    },
+
+    {
+        question: "Which CSS property controls space inside an element?",
+        answers: [
+            "margin",
+            "padding",
+            "spacing",
+            "inside-space"
+        ],
+        correct: 1,
+        topic: "CSS"
+    },
+
+    {
+        question: "Which CSS property controls space outside an element?",
+        answers: [
+            "padding",
+            "margin",
+            "border",
+            "space"
+        ],
+        correct: 1,
+        topic: "CSS"
+    },
+
+    {
+        question: "Which display value is commonly used for flexible layouts?",
+        answers: [
+            "block",
+            "inline",
+            "flex",
+            "static"
+        ],
+        correct: 2,
+        topic: "CSS"
+    },
+
+
+    // ================= JAVASCRIPT =================
+
+    {
+        question: "JavaScript is mainly used to make web pages:",
+        answers: [
+            "Static",
+            "Interactive",
+            "Only colorful",
+            "Only secure"
+        ],
+        correct: 1,
+        topic: "JavaScript"
+    },
+
+    {
+        question: "Which keyword declares a variable that can be reassigned?",
+        answers: [
+            "let",
+            "constant",
+            "define",
+            "variable"
+        ],
+        correct: 0,
+        topic: "JavaScript"
+    },
+
+    {
+        question: "Which keyword declares a constant?",
+        answers: [
+            "let",
+            "var",
+            "const",
+            "constant"
+        ],
+        correct: 2,
+        topic: "JavaScript"
+    },
+
+    {
+        question: "Which symbol is used for a single-line comment?",
+        answers: [
+            "//",
+            "/*",
+            "#",
+            "<!--"
+        ],
+        correct: 0,
+        topic: "JavaScript"
+    },
+
+    {
+        question: "Which function prints something to the browser console?",
+        answers: [
+            "print()",
+            "console.log()",
+            "display()",
+            "writeConsole()"
+        ],
+        correct: 1,
+        topic: "JavaScript"
+    },
+
+    {
+        question: "Which method adds an element to the end of an array?",
+        answers: [
+            "push()",
+            "add()",
+            "append()",
+            "insert()"
+        ],
+        correct: 0,
+        topic: "JavaScript"
+    },
+
+    {
+        question: "Which operator checks strict equality?",
+        answers: [
+            "=",
+            "==",
+            "===",
+            "!="
+        ],
+        correct: 2,
+        topic: "JavaScript"
+    },
+
+    {
+        question: "Which keyword is used to define a function?",
+        answers: [
+            "function",
+            "def",
+            "fun",
+            "method"
+        ],
+        correct: 0,
+        topic: "JavaScript"
+    },
+
+    {
+        question: "Which object represents the webpage document?",
+        answers: [
+            "WINDOW",
+            "DOCUMENT",
+            "PAGE",
+            "HTML"
+        ],
+        correct: 1,
+        topic: "JavaScript"
+    },
+
+    {
+        question: "Which method selects an element by its ID?",
+        answers: [
+            "getElementById()",
+            "getById()",
+            "selectId()",
+            "findId()"
+        ],
+        correct: 0,
+        topic: "JavaScript"
+    },
+
+
+    // ================= PYTHON =================
+
+    {
+        question: "Python is a:",
+        answers: [
+            "Programming language",
+            "Database",
+            "Operating system",
+            "Web browser"
+        ],
+        correct: 0,
+        topic: "Python"
+    },
+
+    {
+        question: "Which symbol is used for comments in Python?",
+        answers: [
+            "//",
+            "#",
+            "/*",
+            "--"
+        ],
+        correct: 1,
+        topic: "Python"
+    },
+
+    {
+        question: "Which function is used to display output?",
+        answers: [
+            "display()",
+            "show()",
+            "print()",
+            "output()"
+        ],
+        correct: 2,
+        topic: "Python"
+    },
+
+    {
+        question: "Which data type stores True or False?",
+        answers: [
+            "int",
+            "bool",
+            "str",
+            "float"
+        ],
+        correct: 1,
+        topic: "Python"
+    },
+
+    {
+        question: "Which symbol is used to create a list?",
+        answers: [
+            "()",
+            "{}",
+            "[]",
+            "<>"
+        ],
+        correct: 2,
+        topic: "Python"
+    },
+
+    {
+        question: "Which keyword defines a function in Python?",
+        answers: [
+            "function",
+            "def",
+            "fun",
+            "define"
+        ],
+        correct: 1,
+        topic: "Python"
+    },
+
+    {
+        question: "Which keyword is used to create a class?",
+        answers: [
+            "class",
+            "ClassName",
+            "object",
+            "struct"
+        ],
+        correct: 0,
+        topic: "Python"
+    },
+
+    {
+        question: "Which function returns the length of a list?",
+        answers: [
+            "length()",
+            "size()",
+            "len()",
+            "count()"
+        ],
+        correct: 2,
+        topic: "Python"
+    },
+
+    {
+        question: "Which data type stores key-value pairs?",
+        answers: [
+            "List",
+            "Tuple",
+            "Dictionary",
+            "Set"
+        ],
+        correct: 2,
+        topic: "Python"
+    },
+
+    {
+        question: "Which keyword is used for inheritance-related parent access?",
+        answers: [
+            "parent",
+            "super()",
+            "base",
+            "inherit"
+        ],
+        correct: 1,
+        topic: "Python"
+    },
+
+
+    // ================= AI / ML =================
+
+    {
+        question: "What does AI stand for?",
+        answers: [
+            "Artificial Intelligence",
+            "Automatic Information",
+            "Advanced Internet",
+            "Artificial Internet"
+        ],
+        correct: 0,
+        topic: "AI/ML"
+    },
+
+    {
+        question: "What does ML stand for?",
+        answers: [
+            "Machine Learning",
+            "Machine Logic",
+            "Model Learning",
+            "Multiple Learning"
+        ],
+        correct: 0,
+        topic: "AI/ML"
+    },
+
+    {
+        question: "Which is a type of machine learning?",
+        answers: [
+            "Supervised Learning",
+            "Manual Learning",
+            "Static Learning",
+            "Fixed Learning"
+        ],
+        correct: 0,
+        topic: "AI/ML"
+    },
+
+    {
+        question: "Which learning uses labelled data?",
+        answers: [
+            "Unsupervised Learning",
+            "Supervised Learning",
+            "Random Learning",
+            "Manual Learning"
+        ],
+        correct: 1,
+        topic: "AI/ML"
+    },
+
+    {
+        question: "Which learning generally works with unlabelled data?",
+        answers: [
+            "Supervised Learning",
+            "Unsupervised Learning",
+            "Teacher Learning",
+            "Guided Learning"
+        ],
+        correct: 1,
+        topic: "AI/ML"
+    },
+
+    {
+        question: "Which algorithm can be used for classification?",
+        answers: [
+            "Decision Tree",
+            "HTML",
+            "CSS",
+            "SQL"
+        ],
+        correct: 0,
+        topic: "AI/ML"
+    },
+
+    {
+        question: "Which library is commonly used for machine learning in Python?",
+        answers: [
+            "Scikit-learn",
+            "HTML",
+            "Bootstrap",
+            "Firebase"
+        ],
+        correct: 0,
+        topic: "AI/ML"
+    },
+
+    {
+        question: "What is a feature in machine learning?",
+        answers: [
+            "Input variable",
+            "Final answer only",
+            "Error message",
+            "Program name"
+        ],
+        correct: 0,
+        topic: "AI/ML"
+    },
+
+    {
+        question: "What is the purpose of training data?",
+        answers: [
+            "To train a machine learning model",
+            "To design CSS",
+            "To create HTML",
+            "To store passwords"
+        ],
+        correct: 0,
+        topic: "AI/ML"
+    },
+
+    {
+        question: "Which metric is commonly used to evaluate classification?",
+        answers: [
+            "Accuracy",
+            "Color",
+            "Font size",
+            "Padding"
+        ],
+        correct: 0,
+        topic: "AI/ML"
     }
 
-  };
+];
 
+
+// ======================================================
+// SHUFFLE QUESTIONS
+// ======================================================
+
+function shuffleQuestions(array) {
+
+    for (let i = array.length - 1; i > 0; i--) {
+
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [array[i], array[j]] = [array[j], array[i]];
+    }
 }
 
 
+// ======================================================
+// RESET STATISTICS
+// ======================================================
 
-// ========================================
-// UPDATE LIVE STATISTICS
-// ========================================
+function resetStatistics() {
+
+    score = 0;
+
+    correctAnswers = 0;
+
+    wrongAnswers = 0;
+
+    answeredQuestions = 0;
+
+    totalTimeTaken = 0;
+
+    currentQuestion = 0;
+
+    topicStats = {
+        "HTML": {
+            correct: 0,
+            total: 0
+        },
+
+        "CSS": {
+            correct: 0,
+            total: 0
+        },
+
+        "JavaScript": {
+            correct: 0,
+            total: 0
+        },
+
+        "Python": {
+            correct: 0,
+            total: 0
+        },
+
+        "AI/ML": {
+            correct: 0,
+            total: 0
+        }
+    };
+
+    updateLiveStats();
+}
+
+
+// ======================================================
+// LIVE STATS
+// ======================================================
 
 function updateLiveStats() {
 
-  scoreLive.innerText =
-    `Score: ${score}`;
+    scoreLive.textContent = score;
 
-  if (correctLive) {
+    correctLive.textContent = correctAnswers;
 
-    correctLive.innerText =
-      `Correct: ${correctAnswers}`;
+    wrongLive.textContent = wrongAnswers;
 
-  }
-
-  if (wrongLive) {
-
-    wrongLive.innerText =
-      `Wrong: ${wrongAnswers}`;
-
-  }
-
-  if (answeredLive) {
-
-    answeredLive.innerText =
-      `Answered: ${answeredQuestions}`;
-
-  }
-
+    answeredLive.textContent = answeredQuestions;
 }
 
 
-
-// ========================================
+// ======================================================
 // START QUIZ
-// ========================================
+// ======================================================
 
-startBtn.addEventListener("click", () => {
-
-  userName =
-    userNameInput.value.trim();
-
-  if (userName === "") {
-
-    nameError.innerText =
-      "⚠️ Please enter your name!";
-
-    return;
-
-  }
-
-  nameError.innerText = "";
-
-  displayName.innerText =
-    userName;
-
-  resetStatistics();
-
-  currentQuestion = 0;
-
-  answered = false;
-
-  shuffleQuestions(questions);
-
-  startScreen.style.display =
-    "none";
-
-  quizScreen.style.display =
-    "block";
-
-  resultBox.style.display =
-    "none";
-
-  if (aiAnalysis) {
-
-    aiAnalysis.style.display =
-      "none";
-
-  }
-
-  updateLiveStats();
-
-  loadQuestion();
-
-});
+startBtn.addEventListener("click", startQuiz);
 
 
+function startQuiz() {
 
-// ========================================
+    userName = userNameInput.value.trim();
+
+    if (userName === "") {
+
+        nameError.textContent = "Please enter your name.";
+
+        return;
+    }
+
+    nameError.textContent = "";
+
+    resetStatistics();
+
+    shuffleQuestions(questions);
+
+    startScreen.classList.remove("active");
+
+    quizScreen.classList.add("active");
+
+    displayName.textContent = userName;
+
+    showQuestion();
+}
+
+
+// ======================================================
+// SHOW QUESTION
+// ======================================================
+
+function showQuestion() {
+
+    clearInterval(timer);
+
+    answered = false;
+
+    nextBtn.disabled = true;
+
+    timeLeft = 15;
+
+    timerElement.textContent = timeLeft;
+
+    const question = questions[currentQuestion];
+
+    questionElement.textContent = question.question;
+
+    questionNumberElement.textContent =
+        `${currentQuestion + 1} / ${questions.length}`;
+
+    progressBar.style.width =
+        `${((currentQuestion + 1) / questions.length) * 100}%`;
+
+    answersElement.innerHTML = "";
+
+    question.answers.forEach((answer, index) => {
+
+        const button = document.createElement("button");
+
+        button.className = "answer-btn";
+
+        button.textContent = answer;
+
+        button.addEventListener("click", () => {
+
+            checkAnswer(index, button);
+
+        });
+
+        answersElement.appendChild(button);
+    });
+
+    startTimer();
+}
+
+
+// ======================================================
 // TIMER
-// ========================================
+// ======================================================
 
 function startTimer() {
 
-  clearInterval(timer);
+    timer = setInterval(() => {
 
-  timeLeft = 15;
+        timeLeft--;
 
-  timeEl.innerText =
-    timeLeft;
+        timerElement.textContent = timeLeft;
 
-  timer = setInterval(() => {
+        if (timeLeft <= 0) {
 
-    timeLeft--;
+            clearInterval(timer);
 
-    timeEl.innerText =
-      timeLeft;
+            handleTimeOut();
+        }
 
-    if (timeLeft <= 0) {
-
-      clearInterval(timer);
-
-      if (!answered) {
-
-        answered = true;
-
-        wrongAnswers++;
-
-        answeredQuestions++;
-
-        const currentTopic =
-          questions[currentQuestion].topic;
-
-        topicStats[currentTopic].total++;
-
-        updateLiveStats();
-
-        showCorrectAnswer();
-
-        nextBtn.style.display =
-          "block";
-
-      }
-
-    }
-
-  }, 1000);
-
+    }, 1000);
 }
 
 
+// ======================================================
+// TIME OUT
+// ======================================================
 
-// ========================================
-// SHOW CORRECT ANSWER
-// ========================================
+function handleTimeOut() {
 
-function showCorrectAnswer() {
+    if (answered) return;
 
-  const correctIndex =
-    questions[currentQuestion].correct;
-
-  const buttons =
-    answersEl.querySelectorAll("button");
-
-  buttons.forEach((button, index) => {
-
-    button.disabled = true;
-
-    if (index === correctIndex) {
-
-      button.classList.add("correct");
-
-    }
-
-  });
-
-}
-
-
-
-// ========================================
-// LOAD QUESTION
-// ========================================
-
-function loadQuestion() {
-
-  answered = false;
-
-  nextBtn.style.display =
-    "none";
-
-  startTimer();
-
-  const q =
-    questions[currentQuestion];
-
-  questionEl.innerText =
-    q.question;
-
-  answersEl.innerHTML =
-    "";
-
-  questionNumber.innerText =
-    `Question ${currentQuestion + 1} of ${questions.length}`;
-
-  updateLiveStats();
-
-  const progress =
-    ((currentQuestion + 1) /
-      questions.length) * 100;
-
-  progressBar.style.width =
-    progress + "%";
-
-
-
-  q.answers.forEach((answer, index) => {
-
-    const button =
-      document.createElement("button");
-
-    button.innerText =
-      answer;
-
-    button.classList.add(
-      "answer-btn"
-    );
-
-    button.addEventListener(
-      "click",
-      () => {
-
-        checkAnswer(
-          index,
-          button
-        );
-
-      }
-    );
-
-    answersEl.appendChild(
-      button
-    );
-
-  });
-
-}
-
-
-
-// ========================================
-// CHECK ANSWER
-// ========================================
-
-function checkAnswer(
-  selectedIndex,
-  selectedButton
-) {
-
-  if (answered) return;
-
-  answered = true;
-
-  clearInterval(timer);
-
-  // Calculate time used for this question
-  const questionTimeUsed =
-    15 - timeLeft;
-
-  totalTimeTaken +=
-    questionTimeUsed;
-
-  answeredQuestions++;
-
-  const currentQ =
-    questions[currentQuestion];
-
-  const correctIndex =
-    currentQ.correct;
-
-  const currentTopic =
-    currentQ.topic;
-
-  topicStats[currentTopic].total++;
-
-  const buttons =
-    answersEl.querySelectorAll("button");
-
-  buttons.forEach(
-    (button, index) => {
-
-      button.disabled = true;
-
-      if (index === correctIndex) {
-
-        button.classList.add(
-          "correct"
-        );
-
-      }
-
-    }
-  );
-
-
-
-  if (
-    selectedIndex ===
-    correctIndex
-  ) {
-
-    score++;
-
-    correctAnswers++;
-
-    topicStats[currentTopic].correct++;
-
-  }
-
-  else {
+    answered = true;
 
     wrongAnswers++;
 
-    selectedButton.classList.add(
-      "wrong"
-    );
+    answeredQuestions++;
 
-  }
+    const topic = questions[currentQuestion].topic;
 
+    topicStats[topic].total++;
 
+    const buttons =
+        document.querySelectorAll(".answer-btn");
 
-  updateLiveStats();
+    buttons.forEach(button => {
 
-  nextBtn.style.display =
-    "block";
+        button.disabled = true;
 
+    });
+
+    buttons[questions[currentQuestion].correct]
+        .classList.add("correct");
+
+    nextBtn.disabled = false;
+
+    updateLiveStats();
 }
 
 
+// ======================================================
+// CHECK ANSWER
+// ======================================================
 
-// ========================================
+function checkAnswer(selectedIndex, selectedButton) {
+
+    if (answered) return;
+
+    answered = true;
+
+    clearInterval(timer);
+
+    const question = questions[currentQuestion];
+
+    const timeUsed = 15 - timeLeft;
+
+    totalTimeTaken += timeUsed;
+
+    answeredQuestions++;
+
+    topicStats[question.topic].total++;
+
+    const buttons =
+        document.querySelectorAll(".answer-btn");
+
+    buttons.forEach(button => {
+
+        button.disabled = true;
+
+    });
+
+
+    if (selectedIndex === question.correct) {
+
+        score++;
+
+        correctAnswers++;
+
+        topicStats[question.topic].correct++;
+
+        selectedButton.classList.add("correct");
+
+    } else {
+
+        wrongAnswers++;
+
+        selectedButton.classList.add("wrong");
+
+        buttons[question.correct]
+            .classList.add("correct");
+    }
+
+    updateLiveStats();
+
+    nextBtn.disabled = false;
+}
+
+
+// ======================================================
 // NEXT QUESTION
-// ========================================
+// ======================================================
 
-nextBtn.addEventListener(
-  "click",
-  () => {
+nextBtn.addEventListener("click", nextQuestion);
+
+
+function nextQuestion() {
 
     currentQuestion++;
 
-    if (
-      currentQuestion <
-      questions.length
-    ) {
+    if (currentQuestion >= questions.length) {
 
-      loadQuestion();
+        showResult();
 
+        return;
     }
 
-    else {
-
-      showResult();
-
-    }
-
-  }
-);
-
-
-
-// ========================================
-// GET PERFORMANCE LEVEL
-// ========================================
-
-function getPerformanceLevel(
-  percentage
-) {
-
-  if (percentage >= 90) {
-
-    return "Excellent 🏆";
-
-  }
-
-  if (percentage >= 75) {
-
-    return "Good 🟢";
-
-  }
-
-  if (percentage >= 50) {
-
-    return "Average 🟡";
-
-  }
-
-  return "Needs Improvement 🔴";
-
+    showQuestion();
 }
 
 
+// ======================================================
+// PERFORMANCE LEVEL
+// ======================================================
 
-// ========================================
+function getPerformanceLevel(percentage) {
+
+    if (percentage >= 80) {
+
+        return "Excellent";
+
+    } else if (percentage >= 60) {
+
+        return "Good";
+
+    } else if (percentage >= 40) {
+
+        return "Average";
+
+    } else {
+
+        return "Needs Improvement";
+    }
+}
+
+
+// ======================================================
 // FIND WEAK TOPIC
-// ========================================
+// ======================================================
 
 function findWeakTopic() {
 
-  let weakestTopic =
-    "None";
+    let weakestTopic = "HTML";
 
-  let lowestPercentage =
-    101;
+    let lowestPercentage = 101;
 
-  for (
-    const topic in topicStats
-  ) {
+    for (const topic in topicStats) {
 
-    const data =
-      topicStats[topic];
+        const stats = topicStats[topic];
 
-    if (data.total === 0) {
+        if (stats.total === 0) {
+            continue;
+        }
 
-      continue;
+        const percentage =
+            (stats.correct / stats.total) * 100;
+
+        if (percentage < lowestPercentage) {
+
+            lowestPercentage = percentage;
+
+            weakestTopic = topic;
+        }
+    }
+
+    return weakestTopic;
+}
+
+
+// ======================================================
+// RECOMMENDATION
+// ======================================================
+
+function getRecommendation(weakTopic, percentage) {
+
+    if (percentage >= 80) {
+
+        return `Excellent performance! Keep practicing ${weakTopic} and maintain your consistency.`;
 
     }
 
-    const topicPercentage =
-      (data.correct /
-        data.total) * 100;
+    if (percentage >= 60) {
 
-    if (
-      topicPercentage <
-      lowestPercentage
-    ) {
-
-      lowestPercentage =
-        topicPercentage;
-
-      weakestTopic =
-        topic;
+        return `Good performance. Revise ${weakTopic} and practice more questions to improve further.`;
 
     }
 
-  }
+    if (percentage >= 40) {
 
-  return weakestTopic;
+        return `Your performance is average. Focus especially on ${weakTopic} and revise its basic concepts.`;
 
+    }
+
+    return `Your performance needs improvement. Start with the basics of ${weakTopic} and practice regularly.`;
 }
 
 
+// ======================================================
+// AI STYLE ANALYSIS
+// ======================================================
 
-// ========================================
-// GET RECOMMENDATION
-// ========================================
+function generateAIAnalysis(percentage) {
 
-function getRecommendation(
-  weakTopic,
-  percentage
-) {
+    const level =
+        getPerformanceLevel(percentage);
 
-  if (
-    percentage >= 90
-  ) {
+    const weak =
+        findWeakTopic();
 
-    return "Excellent performance! Keep practicing all topics and try advanced questions.";
+    const recommendationText =
+        getRecommendation(weak, percentage);
 
-  }
 
-  if (
-    weakTopic === "None"
-  ) {
+    performanceLevel.textContent = level;
 
-    return "Continue practicing regularly to improve your knowledge.";
+    predictedScore.textContent =
+        `${Math.round(percentage)}%`;
 
-  }
+    weakTopic.textContent = weak;
 
-  if (
-    percentage >= 75
-  ) {
+    recommendation.textContent =
+        recommendationText;
 
-    return `Good performance. Focus more on ${weakTopic} to reach an excellent level.`;
+    aiAnalysis.style.display = "block";
 
-  }
-
-  if (
-    percentage >= 50
-  ) {
-
-    return `You need more practice. Give extra attention to ${weakTopic}.`;
-
-  }
-
-  return `Your performance needs improvement. Start with ${weakTopic} basics and practice daily.`;
-
+    return {
+        level,
+        weak,
+        recommendation: recommendationText
+    };
 }
 
 
-
-// ========================================
-// AI PERFORMANCE ANALYSIS
-// ========================================
-
-function generateAIAnalysis(
-  percentage
-) {
-
-  const level =
-    getPerformanceLevel(
-      percentage
-    );
-
-  const weak =
-    findWeakTopic();
-
-  const predicted =
-    Math.min(
-      100,
-      Math.round(
-        percentage +
-        (percentage >= 75 ? 3 : 8)
-      )
-    );
-
-  const advice =
-    getRecommendation(
-      weak,
-      percentage
-    );
-
-  if (performanceLevel) {
-
-    performanceLevel.innerText =
-      level;
-
-  }
-
-  if (predictedScore) {
-
-    predictedScore.innerText =
-      `${predicted}%`;
-
-  }
-
-  if (weakTopic) {
-
-    weakTopic.innerText =
-      weak;
-
-  }
-
-  if (recommendation) {
-
-    recommendation.innerText =
-      advice;
-
-  }
-
-  if (aiAnalysis) {
-
-    aiAnalysis.style.display =
-      "block";
-
-  }
-
-}
-
-
-
-// ========================================
+// ======================================================
 // SHOW RESULT
-// ========================================
+// ======================================================
 
 async function showResult() {
 
-  clearInterval(timer);
+    clearInterval(timer);
 
-  quizScreen.style.display =
-    "none";
+    quizScreen.classList.remove("active");
 
-  resultBox.style.display =
-    "block";
+    resultBox.classList.add("active");
 
 
+    const percentage =
+        Math.round((score / questions.length) * 100);
 
-  const percentage =
-    Math.round(
-      (score /
-        questions.length) * 100
+
+    totalQuestionsElement.textContent =
+        questions.length;
+
+    finalCorrect.textContent =
+        correctAnswers;
+
+    finalWrong.textContent =
+        wrongAnswers;
+
+    finalPercentage.textContent =
+        `${percentage}%`;
+
+
+    const analysis =
+        generateAIAnalysis(percentage);
+
+
+    saveStatus.textContent =
+        "Saving your result...";
+
+
+    await saveResult(
+        percentage,
+        analysis
     );
-
-
-
-  scoreEl.innerText =
-    `Your Score: ${score} / ${questions.length}`;
-
-
-
-  // ========================================
-  // PERFORMANCE MESSAGE
-  // ========================================
-
-  if (percentage === 100) {
-
-    messageEl.innerText =
-      "🏆 Perfect! Amazing performance!";
-
-  }
-
-  else if (percentage >= 80) {
-
-    messageEl.innerText =
-      "🔥 Excellent! Great job!";
-
-  }
-
-  else if (percentage >= 60) {
-
-    messageEl.innerText =
-      "👏 Good job! Keep learning!";
-
-  }
-
-  else {
-
-    messageEl.innerText =
-      "💪 Keep practicing and try again!";
-
-  }
-
-
-
-  // ========================================
-  // FINAL STATISTICS
-  // ========================================
-
-  if (totalQuestionsEl) {
-
-    totalQuestionsEl.innerText =
-      questions.length;
-
-  }
-
-  if (finalCorrect) {
-
-    finalCorrect.innerText =
-      correctAnswers;
-
-  }
-
-  if (finalWrong) {
-
-    finalWrong.innerText =
-      wrongAnswers;
-
-  }
-
-  if (finalPercentage) {
-
-    finalPercentage.innerText =
-      `${percentage}%`;
-
-  }
-
-
-
-  // ========================================
-  // AI ANALYSIS
-  // ========================================
-
-  generateAIAnalysis(
-    percentage
-  );
-
-
-
-  // ========================================
-  // SAVE RESULT
-  // ========================================
-
-  saveStatus.innerText =
-    "Saving your result... ⏳";
-
-
-
-  try {
-
-    const weak =
-      findWeakTopic();
-
-    const level =
-      getPerformanceLevel(
-        percentage
-      );
-
-    const predicted =
-      Math.min(
-        100,
-        Math.round(
-          percentage +
-          (percentage >= 75 ? 3 : 8)
-        )
-      );
-
-
-
-    await addDoc(
-      collection(
-        db,
-        "quizResults"
-      ),
-      {
-
-        name: userName,
-
-        score: score,
-
-        totalQuestions:
-          questions.length,
-
-        percentage:
-          percentage,
-
-        correctAnswers:
-          correctAnswers,
-
-        wrongAnswers:
-          wrongAnswers,
-
-        answeredQuestions:
-          answeredQuestions,
-
-        totalTimeTaken:
-          totalTimeTaken,
-
-        performanceLevel:
-          level,
-
-        predictedPerformance:
-          predicted,
-
-        weakTopic:
-          weak,
-
-        topicPerformance: {
-
-          HTML:
-            topicStats.HTML,
-
-          CSS:
-            topicStats.CSS,
-
-          JavaScript:
-            topicStats.JavaScript,
-
-          Python:
-            topicStats.Python,
-
-          AI_ML:
-            topicStats["AI/ML"]
-
-        },
-
-        timestamp:
-          serverTimestamp()
-
-      }
-    );
-
-
-
-    saveStatus.innerText =
-      "✅ Your result has been saved!";
-
 
 
     await loadRecentResults();
 
     await loadLeaderboard();
-
-  }
-
-  catch (error) {
-
-    console.error(
-      "Firebase Error:",
-      error
-    );
-
-    saveStatus.innerText =
-      "❌ Result could not be saved.";
-
-    loadRecentResults();
-
-    loadLeaderboard();
-
-  }
-
 }
 
 
+// ======================================================
+// SAVE RESULT TO FIREBASE
+// ======================================================
 
-// ========================================
+async function saveResult(percentage, analysis) {
+
+    try {
+
+        await addDoc(
+            collection(db, "quizResults"),
+            {
+
+                name: userName,
+
+                score: score,
+
+                totalQuestions: questions.length,
+
+                percentage: percentage,
+
+                correctAnswers: correctAnswers,
+
+                wrongAnswers: wrongAnswers,
+
+                answeredQuestions: answeredQuestions,
+
+                totalTimeTaken: totalTimeTaken,
+
+                performanceLevel: analysis.level,
+
+                predictedPerformance: percentage,
+
+                weakTopic: analysis.weak,
+
+                topicPerformance: {
+
+                    HTML: topicStats["HTML"],
+
+                    CSS: topicStats["CSS"],
+
+                    JavaScript: topicStats["JavaScript"],
+
+                    Python: topicStats["Python"],
+
+                    AI_ML: topicStats["AI/ML"]
+                },
+
+                timestamp: serverTimestamp()
+            }
+        );
+
+
+        saveStatus.textContent =
+            "✅ Result saved successfully!";
+
+    } catch (error) {
+
+        console.error(
+            "Firebase save error:",
+            error
+        );
+
+        saveStatus.textContent =
+            "⚠️ Result could not be saved.";
+    }
+}
+
+
+// ======================================================
 // LOAD RECENT RESULTS
-// ========================================
+// ======================================================
 
 async function loadRecentResults() {
 
-  resultsList.innerHTML =
-    "Loading results...";
+    try {
+
+        const resultsQuery = query(
+            collection(db, "quizResults"),
+            orderBy("timestamp", "desc"),
+            limit(10)
+        );
+
+        const snapshot =
+            await getDocs(resultsQuery);
 
 
+        if (snapshot.empty) {
 
-  try {
+            resultsList.innerHTML =
+                "<p>No results yet.</p>";
 
-    const resultsQuery =
-      query(
-
-        collection(
-          db,
-          "quizResults"
-        ),
-
-        orderBy(
-          "timestamp",
-          "desc"
-        ),
-
-        limit(10)
-
-      );
+            return;
+        }
 
 
-
-    const querySnapshot =
-      await getDocs(
-        resultsQuery
-      );
+        resultsList.innerHTML = "";
 
 
+        snapshot.forEach(doc => {
 
-    resultsList.innerHTML =
-      "";
+            const data = doc.data();
 
+            const item =
+                document.createElement("div");
 
+            item.className = "result-item";
 
-    if (
-      querySnapshot.empty
-    ) {
+            item.innerHTML = `
+                <div>
+                    <strong>${escapeHTML(data.name || "Anonymous")}</strong>
+                    <br>
+                    <small>
+                        Score: ${data.score || 0}/${data.totalQuestions || 50}
+                    </small>
+                </div>
 
-      resultsList.innerHTML =
-        "No results yet.";
+                <strong>
+                    ${data.percentage || 0}%
+                </strong>
+            `;
 
-      return;
+            resultsList.appendChild(item);
+        });
 
+    } catch (error) {
+
+        console.error(
+            "Recent results error:",
+            error
+        );
+
+        resultsList.innerHTML =
+            "<p>Unable to load recent results.</p>";
     }
-
-
-
-    querySnapshot.forEach(
-      (doc) => {
-
-        const data =
-          doc.data();
-
-        const resultItem =
-          document.createElement(
-            "div"
-          );
-
-        resultItem.classList.add(
-          "result-item"
-        );
-
-
-
-        resultItem.innerHTML = `
-          <strong>${data.name}</strong>
-          <span>${data.score} / ${data.totalQuestions}</span>
-        `;
-
-        resultsList.appendChild(
-          resultItem
-        );
-
-      }
-    );
-
-  }
-
-  catch (error) {
-
-    console.error(
-      "Error loading results:",
-      error
-    );
-
-    resultsList.innerHTML =
-      "Could not load results.";
-
-  }
-
 }
 
 
-
-// ========================================
-// GLOBAL LEADERBOARD
-// ========================================
+// ======================================================
+// LOAD LEADERBOARD
+// ======================================================
 
 async function loadLeaderboard() {
 
-  leaderboardEl.innerHTML =
-    "Loading leaderboard...";
+    try {
+
+        const leaderboardQuery = query(
+            collection(db, "quizResults"),
+            orderBy("score", "desc"),
+            limit(10)
+        );
+
+        const snapshot =
+            await getDocs(leaderboardQuery);
 
 
+        if (snapshot.empty) {
 
-  try {
+            leaderboard.innerHTML =
+                "<p>No leaderboard data yet.</p>";
 
-    const leaderboardQuery =
-      query(
-
-        collection(
-          db,
-          "quizResults"
-        ),
-
-        orderBy(
-          "score",
-          "desc"
-        ),
-
-        limit(10)
-
-      );
+            return;
+        }
 
 
+        leaderboard.innerHTML = "";
 
-    const snapshot =
-      await getDocs(
-        leaderboardQuery
-      );
+        let rank = 1;
 
 
+        snapshot.forEach(doc => {
 
-    leaderboardEl.innerHTML =
-      "";
+            const data = doc.data();
 
+            const item =
+                document.createElement("div");
 
+            item.className = "result-item";
 
-    if (
-      snapshot.empty
-    ) {
+            item.innerHTML = `
+                <div>
+                    <strong>
+                        #${rank} ${escapeHTML(data.name || "Anonymous")}
+                    </strong>
 
-      leaderboardEl.innerHTML =
-        "No players yet.";
+                    <br>
 
-      return;
+                    <small>
+                        ${data.score || 0}/${data.totalQuestions || 50}
+                    </small>
+                </div>
 
+                <strong>
+                    ${data.percentage || 0}%
+                </strong>
+            `;
+
+            leaderboard.appendChild(item);
+
+            rank++;
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Leaderboard error:",
+            error
+        );
+
+        leaderboard.innerHTML =
+            "<p>Unable to load leaderboard.</p>";
     }
-
-
-
-    let rank = 1;
-
-
-
-    snapshot.forEach(
-      (doc) => {
-
-        const data =
-          doc.data();
-
-        const item =
-          document.createElement(
-            "div"
-          );
-
-        item.classList.add(
-          "leaderboard-item"
-        );
-
-
-
-        let medal = "";
-
-        if (rank === 1) {
-
-          medal = "🥇";
-
-        }
-
-        else if (rank === 2) {
-
-          medal = "🥈";
-
-        }
-
-        else if (rank === 3) {
-
-          medal = "🥉";
-
-        }
-
-        else {
-
-          medal =
-            `#${rank}`;
-
-        }
-
-
-
-        item.innerHTML = `
-
-          <span>
-            ${medal}
-            <strong>${data.name}</strong>
-          </span>
-
-          <span>
-            ${data.score}/${data.totalQuestions}
-          </span>
-
-        `;
-
-
-
-        leaderboardEl.appendChild(
-          item
-        );
-
-        rank++;
-
-      }
-    );
-
-  }
-
-  catch (error) {
-
-    console.error(
-      "Leaderboard Error:",
-      error
-    );
-
-    leaderboardEl.innerHTML =
-      "Could not load leaderboard.";
-
-  }
-
 }
 
 
+// ======================================================
+// BASIC HTML ESCAPE
+// ======================================================
 
-// ========================================
+function escapeHTML(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+// ======================================================
 // RESTART QUIZ
-// ========================================
+// ======================================================
 
 restartBtn.addEventListener(
-  "click",
-  () => {
-
-    clearInterval(timer);
-
-    currentQuestion = 0;
-
-    answered = false;
-
-    resetStatistics();
-
-    userNameInput.value =
-      "";
-
-    displayName.innerText =
-      "";
-
-    scoreLive.innerText =
-      "Score: 0";
-
-    timeEl.innerText =
-      "15";
-
-    if (correctLive) {
-
-      correctLive.innerText =
-        "Correct: 0";
-
-    }
-
-    if (wrongLive) {
-
-      wrongLive.innerText =
-        "Wrong: 0";
-
-    }
-
-    if (answeredLive) {
-
-      answeredLive.innerText =
-        "Answered: 0";
-
-    }
-
-    if (aiAnalysis) {
-
-      aiAnalysis.style.display =
-        "none";
-
-    }
-
-    resultBox.style.display =
-      "none";
-
-    quizScreen.style.display =
-      "none";
-
-    startScreen.style.display =
-      "block";
-
-  }
+    "click",
+    restartQuiz
 );
 
 
+function restartQuiz() {
 
-// ========================================
-// INITIAL LOAD
-// ========================================
+    clearInterval(timer);
+
+    resultBox.classList.remove("active");
+
+    startScreen.classList.add("active");
+
+    userNameInput.value = "";
+
+    nameError.textContent = "";
+
+    progressBar.style.width = "0%";
+
+    resetStatistics();
+}
+
+
+// ======================================================
+// ENTER KEY SUPPORT
+// ======================================================
+
+userNameInput.addEventListener(
+    "keypress",
+    function(event) {
+
+        if (event.key === "Enter") {
+
+            startQuiz();
+        }
+    }
+);
+
+
+// ======================================================
+// INITIAL DATA LOAD
+// ======================================================
 
 loadRecentResults();
+
 loadLeaderboard();
