@@ -263,8 +263,20 @@ h1 {
 }
 
 .quiz-footer {
-    text-align: right;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
     margin-top: 20px;
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, #e53935, #b71c1c);
+}
+
+.submit-btn:hover {
+    background: linear-gradient(135deg, #c62828, #8e0000);
 }
 
 
@@ -299,7 +311,7 @@ h1 {
 
 .final-stat-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 12px;
 }
 
